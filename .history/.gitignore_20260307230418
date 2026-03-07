@@ -1,6 +1,0 @@
-node_modules/*
-dist*
-/frontend/build/*
-/OntapLT/frontend
-/v1.0.*
-/frontend/node_modules/*
