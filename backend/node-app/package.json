@@ -1,0 +1,110 @@
+{
+    "name": "jwtbackend",
+    "version": "1.0.0",
+    "description": "Json Web Token",
+    "main": "build/server.js",
+    "bin": "build/server.js",
+    "keyword": [
+        "nodejs",
+        "jwt"
+    ],
+    "engines": {
+        "node": "v20.17.0",
+        "npm": "10.8.2"
+    },
+    "scripts": {
+        "start": "babel-node src/server.js",
+        "dev": "nodemon --exec babel-node src/server.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "create-migration": "npx sequelize-cli migration:generate --name",
+        "rmigration": "npx sequelize-cli db:migrate --env test",
+        "rmigration_docker": "npx sequelize-cli db:migrate --env docker_test",
+        "rmigration-online": "npx sequelize-cli db:migrate --env development",
+        "create-seeder": "npx sequelize-cli seed:generate --name",
+        "rseederall": "npx sequelize-cli db:seed:all --env docker_test",
+        "rseederall-online": "npx sequelize-cli db:seed:all --env development",
+        "rseeder": "npx sequelize-cli db:seed --seed",
+        "rseeder_docker": "npx sequelize-cli db:seed --seed --env docker_test",
+        "rseeder-online": "npx sequelize-cli db:seed --seed --env development",
+        "undseeder": "npx sequelize-cli db:seed:undo:all --env docker_test",
+        "undseeder-online": "npx sequelize-cli db:seed:undo:all --env development",
+        "docker:build": "docker-compose -f ../docker-compose.yml build",
+        "docker:up": "docker-compose -f ../docker-compose.yml up",
+        "docker:down": "docker-compose -f ../docker-compose.yml down --rmi all --volumes",
+        "docker:migrate": "docker exec -it node_app_container npx sequelize-cli db:migrate --env docker_test",
+        "docker:seed": "docker exec -it node_app_container npx sequelize-cli db:seed:all --env docker_test",
+        "docker:undo-seed": "docker exec -it node_app_container npx sequelize-cli db:seed:undo:all --env docker_test",
+        "build:babel": "babel src --out-dir build --copy-files",
+        "build": "npm run build:babel && pkg . --output dist/BE_TestApp"
+    },
+    "author": "khavy1203",
+    "license": "ISC",
+    "dependencies": {
+        "@azure/ai-form-recognizer": "^5.0.0",
+        "@azure/cognitiveservices-computervision": "^8.2.0",
+        "@azure/core-auth": "^1.9.0",
+        "@azure/ms-rest-js": "^2.7.0",
+        "@zxing/library": "^0.21.3",
+        "axios": "^1.7.7",
+        "bcrypt": "^5.0.1",
+        "bcryptjs": "^2.4.3",
+        "bluebird": "^3.7.2",
+        "body-parser": "1.19.2",
+        "child_process": "^1.0.2",
+        "cookie-parser": "^1.4.6",
+        "cors": "^2.8.5",
+        "dotenv": "16.0.0",
+        "ejs": "^3.1.10",
+        "express": "^4.21.1",
+        "fabric": "^6.5.4",
+        "font-awesome": "^4.7.0",
+        "form-data": "^4.0.1",
+        "fs": "^0.0.1-security",
+        "fs-extra": "^11.2.0",
+        "http": "^0.0.1-security",
+        "install": "^0.13.0",
+        "jimp": "^1.6.0",
+        "jsonwebtoken": "^9.0.2",
+        "lodash": "^4.17.21",
+        "multer": "^1.4.5-lts.1",
+        "mysql2": "^3.11.4",
+        "nodemon": "^3.1.9",
+        "npm": "^11.0.0",
+        "path": "^0.12.7",
+        "pkg": "^5.8.1",
+        "qrcode-reader": "^1.0.4",
+        "sequelize": "^6.37.5",
+        "sequelize-cli": "^6.6.2",
+        "stream": "^0.0.3",
+        "telegraf": "^4.16.3",
+        "ws": "^8.18.0",
+        "xlsx": "^0.18.5",
+        "xml2js": "^0.6.2"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.25.9",
+        "@babel/core": "^7.26.0",
+        "@babel/node": "^7.26.0",
+        "@babel/preset-env": "^7.26.0",
+        "@babel/register": "^7.25.9"
+    },
+    "pkg": {
+        "targets": [
+            "node18-win-x64",
+            "node18-linux-x64",
+            "node18-macos-x64"
+        ],
+        "outputPath": "dist",
+        "assets": [
+            "src/**/*",
+            "build/**/*",
+            "views/**/*",
+            ".env",
+            "build/upload/600cauhoi/**/*",
+            "config/config.json"
+        ],
+        "scripts": [
+            "build/models/index.js"
+        ]
+    }
+}

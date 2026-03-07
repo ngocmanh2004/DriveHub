@@ -1,0 +1,7 @@
+node-app/node_modules/*
+node-app/node_modules
+node-app/upload
+node-app/src/asset/ImageStudent/*
+node-app/build
+node-app/dist
+node-app/src/upload/originQR/*

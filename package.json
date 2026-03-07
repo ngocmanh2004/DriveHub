@@ -1,0 +1,59 @@
+{
+  "name": "checksubject",
+  "version": "v1.0.14",
+  "description": "Reactjs typescript build Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ./main.js",
+    "dist": "electron-builder"
+  },
+  "author": "Khả Vy ( fb: nhoke.bola )",
+  "license": "ISC",
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^24.6.0"
+  },
+  "build": {
+    "appId": "com.example.reactelectron",
+    "productName": "KiemTraMonHoc",
+    "files": [
+      "main.js",
+      "frontend/build/**/*",
+      "node_modules/**/*",
+      "preload.js"
+    ],
+    "directories": {
+      "output": "v1.0.14_buildTestStudent"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "khavy1203",
+      "repo": "electronApp"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "frontend/build/favicon.ico",
+      "artifactName": "${productName}-Setup-${version}-${arch}.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "allowElevation": true
+    }
+  }
+}

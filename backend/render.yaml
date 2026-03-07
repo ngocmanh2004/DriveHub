@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: node-app
+    env: docker
+    dockerfilePath: ./node-app/Dockerfile # Trỏ tới Dockerfile của dịch vụ node-app
+    buildCommand: "" # Docker runtime sẽ xử lý build
+    startCommand: "" # Docker runtime tự chạy CMD trong Dockerfile
+    autoDeploy: true
+    buildContextPath: ./node-app
+    envVars: # Biến môi trường cho node-app
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: Khavy
+      - key: PYTHON_API_URL
+        value: https://python-app-hcmr.onrender.com
+
+  - type: web
+    name: python-app
+    env: docker
+    dockerfilePath: ./python-app/Dockerfile # Trỏ tới Dockerfile của dịch vụ python-app
+    buildCommand: "" # Docker runtime sẽ xử lý build
+    startCommand: "" # Docker runtime tự chạy CMD trong Dockerfile
+    autoDeploy: true
