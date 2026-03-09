@@ -28,6 +28,7 @@ const FinalExamForm: React.FC = () => {
   const [nextSubjectName, setNextSubjectName] = useState<string | null>(null);
   const [untestedSubjects, setUntestedSubjects] = useState<Subject[]>([]); // Lưu danh sách môn chưa thi
 
+  const [showMobileList, setShowMobileList] = useState<boolean>(false);
   // Khởi tạo bài thi ban đầu
   useEffect(() => {
     const initializeExam = async () => {
@@ -155,6 +156,10 @@ const FinalExamForm: React.FC = () => {
 
 
   const handleEndExam = async () => {
+    if (!window.confirm("Bạn có chắc chắn muốn nộp bài và kết thúc thi không?")) {
+      return;
+    }
+
     if (!isExamFinished) {
       setIsExamFinished(true); // Đánh dấu bài thi đã kết thúc
       setTimeRemaining(0); // Dừng bộ đếm
@@ -278,7 +283,7 @@ const FinalExamForm: React.FC = () => {
       setUntestedSubjects(updatedUntestedSubjects);
       setNextSubjectName(updatedUntestedSubjects.length > 0 ? updatedUntestedSubjects[0].name : null);
 
-      setScore(calculatedScore);
+      // setScore(calculatedScore);
       setShowResult(true);
     } catch (error) {
       console.error("Lỗi khi ghi nhận kết quả:", error);
@@ -352,7 +357,19 @@ const FinalExamForm: React.FC = () => {
   return (
     <div className={`exam-container`}>
       <div className="left-exam">
+        <div className="mobile-time-top" style={{ display: 'none' }}>
+          <div className="time-remaining" style={{ color: timeOut ? 'red' : 'black', fontWeight: 'bold' }}>
+            Thời gian còn lại: <span>{timeRemaining === 0 ? "Hết thời gian" : formatTime(timeRemaining)}</span>
+          </div>
+        </div>
+        <button className="mobile-list-toggle-btn" style={{ display: 'none' }} onClick={() => setShowMobileList(!showMobileList)}>
+          ☰ Danh sách câu hỏi ({selectedOptions.filter(opt => opt.length > 0).length}/{arrQuestion.length})
+        </button>
+
         <div className="question-section">
+          <div className="mobile-current-question-info" style={{ display: 'none' }}>
+            Câu {currentQuestion + 1} / {arrQuestion.length}
+          </div>
           {(() => {
             const imageSrc = getQuestionImage(arrQuestion[currentQuestion]?.number);
             return imageSrc ? (
@@ -365,6 +382,37 @@ const FinalExamForm: React.FC = () => {
             );
           })()}
         </div>
+
+        <div className="mobile-controls" style={{ display: 'none' }}>
+          <div className="mobile-answer-buttons">
+            {arrQuestion[currentQuestion]?.options.map((_: any, index: number) => {
+              const isSelected = selectedOptions[currentQuestion]?.includes(index + 1);
+              return (
+                <button
+                  key={index}
+                  className={`mobile-btn ${isSelected ? 'active' : ''}`}
+                  onClick={() => toggleOption(currentQuestion, index + 1)}
+                >
+                  {index + 1}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="mobile-navigation">
+            <button className="nav-btn prev" onClick={() => handleQuestionChange((currentQuestion - 1 + arrQuestion.length) % arrQuestion.length)} disabled={currentQuestion === 0}>
+              Câu trước
+            </button>
+            <button className="nav-btn next" onClick={() => handleQuestionChange((currentQuestion + 1) % arrQuestion.length)} disabled={currentQuestion === arrQuestion.length - 1}>
+              Câu tiếp theo
+            </button>
+          </div>
+
+          <button className="mobile-end-exam-btn" onClick={handleEndExam}>
+            KẾT THÚC BÀI THI
+          </button>
+        </div>
+
         <div className="footer">
           <div className="left">
             <img src={'data:image/jpg;base64,' + studentNow?.Anh} className='image-hv' alt="" />
