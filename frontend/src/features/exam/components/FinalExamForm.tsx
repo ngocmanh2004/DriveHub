@@ -503,38 +503,6 @@ const FinalExamForm: React.FC = () => {
           nextSubjectName={nextSubjectName} // Thêm prop mới
         />
       )}
-
-      {showMobileList && (
-        <div className="mobile-question-grid show">
-          <div className="mobile-question-content">
-            <div className="grid-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <div className="grid-title" style={{ fontWeight: 'bold', fontSize: '18px' }}>Danh sách câu hỏi</div>
-              <button className="close-grid-btn" style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', padding: '0 10px', color: '#666' }} onClick={() => setShowMobileList(false)}>×</button>
-            </div>
-            <div className="grid-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
-              {arrQuestion.map((_: any, index: number) => {
-                const isAnswered = selectedOptions[index]?.length > 0;
-                return (
-                  <button
-                    key={index}
-                    style={{
-                      height: '45px', borderRadius: '8px', border: '1px solid #ddd', fontWeight: 'bold', fontSize: '16px', color: '#333',
-                      backgroundColor: isAnswered ? '#94ef94' : 'white',
-                      borderColor: currentQuestion === index ? '#ff8484' : (isAnswered ? '#94ef94' : '#ddd')
-                    }}
-                    onClick={() => {
-                      handleQuestionChange(index);
-                      setShowMobileList(false);
-                    }}
-                  >
-                    {index + 1}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
