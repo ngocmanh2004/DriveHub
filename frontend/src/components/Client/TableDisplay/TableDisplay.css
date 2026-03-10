@@ -14,13 +14,13 @@
     padding: 12px 8px;
   }
 
-  .table-result th:nth-child(1), .table-result td:nth-child(1) { width: 35px; padding: 5px; font-size: 14px; } /* STT */
-  .table-result th:nth-child(3), .table-result td:nth-child(3) { width: 60px; padding: 5px; font-size: 13px; } /* Đáp án đúng */
-  .table-result th:nth-child(4), .table-result td:nth-child(4) { width: 75px; padding: 5px; font-size: 13px; } /* Đáp án của bạn */
+  .table-result th:nth-child(1), .table-result td:nth-child(1) { width: 35px; padding: 5px; font-size: 14px; }
+  .table-result th:nth-child(3), .table-result td:nth-child(3) { width: 60px; padding: 5px; font-size: 13px; }
+  .table-result th:nth-child(4), .table-result td:nth-child(4) { width: 75px; padding: 5px; font-size: 13px; }
 
   .image-column img {
     width: 100%;
-    max-width: 800px; /* Cho phép ảnh dãn rộng nhất có thể */
+    max-width: 800px;
     height: auto;
     object-fit: contain;
     display: block;

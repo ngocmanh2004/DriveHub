@@ -61,6 +61,11 @@ const ResultModal: React.FC<ResultModalProps> = ({
 
         <div className="modal-body">
           <div className="student-info">
+             {/* <h3>Thông tin học viên:</h3>
+            <p>Số Báo Danh: <strong>{studentInfo.studentID}</strong></p>
+            <p>Họ và tên: <strong>{studentInfo.fullName}</strong></p>
+            <p>Hạng: {studentInfo.rank}</p>
+            <p>CCCD: {studentInfo.CCCD}</p> */}
             <div className="modal-footer">
               <div className="result-summary-text">
                 <p>
