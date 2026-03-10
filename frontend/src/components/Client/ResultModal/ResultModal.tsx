@@ -62,16 +62,23 @@ const ResultModal: React.FC<ResultModalProps> = ({
         <div className="modal-body">
           <div className="student-info">
             <div className="modal-footer">
-              <strong>Bài thi trước: <span style={{ color: resultStatus === "TRƯỢT" ? "red" : "green" }}>{resultStatus} {`(${score}/${totalQuestions})`}</span></strong>
+              <div className="result-summary-text">
+                <p>
+                  <strong>Bài thi trước: <span className={`result-text ${resultStatus === "TRƯỢT" ? "failed" : "passed"}`}>{resultStatus} {`(${score}/${totalQuestions})`}</span></strong>
+                </p>
+                {nextSubjectName && (
+                  <p>
+                    <strong>Bài thi kế tiếp: <span className="next-subject-text">{nextSubjectName}</span></strong>
+                  </p>
+                )}
+              </div>
+
               {nextSubjectName ? (
-                <>
-                  <strong><p>Bài thi kế tiếp: <span style={{ color: "green" }}>{nextSubjectName}</span> </p></strong>
-                  <div style={{ marginTop: '15px' }}>
-                    <button className="nav-btn next" onClick={onNextExam}>Bài thi kế tiếp</button>
-                  </div>
-                </>
+                <div className="nav-btn-container">
+                  <button className="nav-btn next" onClick={onNextExam}>Bài thi kế tiếp</button>
+                </div>
               ) : (
-                <div style={{ marginTop: '15px' }}>
+                <div className="nav-btn-container">
                   <button className="nav-btn end" onClick={handleClose}>Kết thúc</button>
                 </div>
               )}

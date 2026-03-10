@@ -138,30 +138,63 @@ button:hover {
     padding: 2px; /* Giảm padding viền để bảng to hơn */
   }
 
-  .modal-overlay .student-info p {
-    font-size: 14px;
+  .result-text.failed {
+  color: #dc3545;
+}
+
+.result-text.passed, .next-subject-text {
+  color: #28a745;
+}
+
+.nav-btn-container {
+  margin-top: 15px;
+}
+
+.modal-overlay .student-info p {
+    font-size: 12.5px;
   }
 
   .modal-footer {
-    flex-direction: column; /* Xếp chồng dọc các thành phần */
-    align-items: center; /* Căn giữa tất cả theo chiều ngang */
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Căn giữa toàn bộ các khối con (văn bản & nút) */
+    width: 100%;
     padding: 0;
+    margin-top: 5px;
+  }
+
+  .result-summary-text {
+    display: inline-block;
+    text-align: left; /* Giúp các chữ 'Bài thi' thẳng hàng dọc với nhau */
+    margin: 0 auto;
+    width: fit-content;
   }
 
   .modal-footer p {
-    font-size: 12.5px;
-    margin: 6px 0;
+    font-size: 10px;
+    margin: 5px 0;
   }
 
   h4.next-exam {
     font-size: 14px;
-    margin-bottom: 8px;
+    margin: 10px 0;
   }
 
   .modal-content button {
     padding: 6px 12px;
-    font-size: 13px;
+    font-size: 11px;
+  }
+
+  .nav-btn-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    width: 100%; /* Căn giữa nút bấm so với toàn bộ cột trái */
+  }
+
+  .result-text, .next-subject-text {
+    font-size: 12px;
+    font-weight: bold;
   }
 
   .modal-detail td img {
