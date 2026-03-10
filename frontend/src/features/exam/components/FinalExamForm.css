@@ -434,6 +434,8 @@ button:hover {
         overflow-y: auto;
     }
     .question-section img {
+        display: block;
+        margin: 0 auto;
         max-height: calc(100vh - 40px) !important;
         width: auto !important;
         max-width: 90% !important;
