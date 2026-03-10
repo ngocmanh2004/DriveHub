@@ -387,8 +387,8 @@ button:hover {
     text-align: center;
     padding: 20px;
 }
-.portrait-lock-screen .lock-content h2 { margin-bottom: 10px; color: #333; }
-.portrait-lock-screen .lock-content p { color: #666; font-size: 16px; }
+.portrait-lock-screen .lock-content h2 { margin-bottom: 10px; color: #333; font-size: 20px; }
+.portrait-lock-screen .lock-content p { color: #666; font-size: 14px; padding: 0 10px; }
 
 @media screen and (max-width: 950px) and (orientation: portrait) {
     .portrait-lock-screen {
