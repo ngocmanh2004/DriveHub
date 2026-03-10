@@ -144,6 +144,8 @@
 .header-area .main-nav .nav li.submenu ul li {
     padding: 0 6px !important;
     margin: 2px 0 !important;
+    list-style: none !important;
+    text-align: center !important;
 }
 
 .header-area .main-nav .has-submenu .submenu li a,
@@ -158,6 +160,7 @@
     line-height: 1.5 !important;
     background-color: transparent !important;
     border-bottom: none !important;
+    text-align: center !important;
 }
 
 .header-area .main-nav .has-submenu .submenu li a:hover,
@@ -317,13 +320,8 @@
     }
 
     .header-area .main-nav .has-submenu .submenu li a::before {
-        content: '' !important;
-        width: 6px !important;
-        height: 6px !important;
-        border-radius: 50% !important;
-        background-color: #03a4ed !important;
-        flex-shrink: 0 !important;
-        display: block !important;
+        display: none !important;
+        content: none !important;
     }
 
     .header-area .main-nav .has-submenu .submenu li a:hover {
