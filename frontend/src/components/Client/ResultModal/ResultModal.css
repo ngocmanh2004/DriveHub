@@ -15,9 +15,24 @@
 
 .modal-overlay .modal-footer {
   display: flex;
-  justify-content: center; /* Căn giữa nút bấm theo yêu cầu */
-  padding: 2%;
+  justify-content: center; 
+  padding: 10px;
   width: 100%;
+}
+
+/* Các class màu sắc dùng chung */
+.result-text.failed {
+  color: #dc3545;
+}
+
+.result-text.passed, .next-subject-text {
+  color: #28a745;
+}
+
+.nav-btn-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
 }
 
 /* .modal-overlay .modal-footer button{
@@ -111,10 +126,102 @@ button:hover {
   background-color: #0056b3;
 }
 
-.modal-overlay .student-info p{
-  font-size:22px
+.modal-overlay .student-info p {
+  font-size: 18px;
+  margin: 10px 0;
 }
 
+/* ======================================================
+   DESKTOP UI (MÀN HÌNH LỚN)
+   ====================================================== */
+@media (min-width: 951px) {
+  .modal-overlay {
+    background: rgba(0, 0, 0, 0.7); /* Làm thẫm nền để nổi bật modal */
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0; /* Gắn liền hai khối thành một card duy nhất */
+  }
+
+  .modal-content {
+    flex: 0 0 380px; /* Chiều rộng Sidebar cố định */
+    height: 85vh;    /* Dãn chiều cao bằng với bảng chi tiết */
+    max-width: none;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 12px 0 0 12px; /* Bo góc trái mặt trước */
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4f8 100%);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    border-right: 1px solid #e1e8ed;
+    z-index: 10;
+  }
+
+  .modal-detail {
+    flex: 1;
+    max-width: 900px;
+    height: 85vh;
+    margin: 0;
+    border-radius: 0 12px 12px 0; /* Bo góc phải mặt sau */
+    background-color: #ffffff;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    border: none;
+    z-index: 5;
+  }
+
+  h4.next-exam {
+    font-size: 26px;
+    color: #1a2a3a;
+    margin-bottom: 40px;
+    position: relative;
+    font-weight: 800;
+  }
+
+  h4.next-exam::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #007bff;
+    border-radius: 2px;
+  }
+
+  .modal-overlay .student-info p {
+    font-size: 18px;
+    color: #4a5568;
+    margin: 20px 0;
+  }
+
+  .modal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Căn giữa nội dung theo chiều dọc của Sidebar */
+    gap: 30px;
+  }
+
+  .nav-btn {
+    padding: 15px 40px;
+    font-size: 18px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+
+  .nav-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.3);
+  }
+}
+
+/* ======================================================
+   MOBILE LANDSCAPE (CHẾ ĐỘ GAMING) - KHÔNG ĐƯỢC CHẠM VÀO
+   ====================================================== */
 @media (max-width: 950px) and (orientation: landscape) {
   .modal-overlay {
     padding: 10px;
@@ -138,17 +245,7 @@ button:hover {
     padding: 2px; /* Giảm padding viền để bảng to hơn */
   }
 
-  .result-text.failed {
-  color: #dc3545;
-}
-
-.result-text.passed, .next-subject-text {
-  color: #28a745;
-}
-
-.nav-btn-container {
-  margin-top: 15px;
-}
+  /* Các style màu sắc đã có ở global, trong này chỉ chỉnh size */
 
 .modal-overlay .student-info p {
     font-size: 12.5px;
