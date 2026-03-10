@@ -27,6 +27,18 @@ const FinalExamForm: React.FC = () => {
   const [testCode, setTestCode] = useState<string | null>(null);
   const [nextSubjectName, setNextSubjectName] = useState<string | null>(null);
   const [untestedSubjects, setUntestedSubjects] = useState<Subject[]>([]); // Lưu danh sách môn chưa thi
+  
+  // State quản lý số dòng mỗi cột (Mobile = 15, PC = 10)
+  const [itemsPerColumn, setItemsPerColumn] = useState(10);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerColumn(window.innerWidth <= 950 ? 15 : 10);
+    };
+    handleResize(); // call initially
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Khởi tạo bài thi ban đầu
   useEffect(() => {
@@ -350,8 +362,40 @@ const FinalExamForm: React.FC = () => {
   };
 
   return (
-    <div className={`exam-container`}>
-      <div className="left-exam">
+    <>
+      <div className="portrait-lock-screen">
+        <div className="lock-content">
+          <h2>Vui lòng xoay ngang thiết bị!</h2>
+          <p>Bài thi yêu cầu thiết bị ở chế độ ngang (Landscape) để hiển thị đầy đủ thông tin.</p>
+        </div>
+      </div>
+      
+      <div className={`exam-container`}>
+        {/* D-Pad Ảo Trái */}
+        <div className="virtual-dpad">
+          <div className="dpad-row dpad-top">
+            <button className="dpad-btn up" onClick={() => handleQuestionChange(Math.max(0, currentQuestion - 1))} disabled={currentQuestion === 0}>▲</button>
+          </div>
+          <div className="dpad-row dpad-bottom">
+            <button className="dpad-btn left" onClick={() => handleQuestionChange(Math.max(0, currentQuestion - itemsPerColumn))} disabled={currentQuestion < itemsPerColumn}>◀</button>
+            <button className="dpad-btn down" onClick={() => handleQuestionChange(Math.min(arrQuestion.length - 1, currentQuestion + 1))} disabled={currentQuestion === arrQuestion.length - 1}>▼</button>
+            <button className="dpad-btn right" onClick={() => handleQuestionChange(Math.min(arrQuestion.length - 1, currentQuestion + itemsPerColumn))} disabled={currentQuestion + itemsPerColumn >= arrQuestion.length}>▶</button>
+          </div>
+        </div>
+
+        {/* Numpad Ảo Phải */}
+        <div className="virtual-numpad">
+          <div className="numpad-row">
+            <button className={`numpad-btn ${selectedOptions[currentQuestion]?.includes(1) ? 'active' : ''}`} onClick={() => toggleOption(currentQuestion, 1)}>1</button>
+            <button className={`numpad-btn ${selectedOptions[currentQuestion]?.includes(2) ? 'active' : ''}`} onClick={() => toggleOption(currentQuestion, 2)}>2</button>
+          </div>
+          <div className="numpad-row">
+            <button className={`numpad-btn ${selectedOptions[currentQuestion]?.includes(3) ? 'active' : ''}`} onClick={() => toggleOption(currentQuestion, 3)}>3</button>
+            <button className={`numpad-btn ${selectedOptions[currentQuestion]?.includes(4) ? 'active' : ''}`} onClick={() => toggleOption(currentQuestion, 4)}>4</button>
+          </div>
+        </div>
+
+        <div className="left-exam">
         <div className="question-section">
           {(() => {
             const imageSrc = getQuestionImage(arrQuestion[currentQuestion]?.number);
@@ -364,6 +408,9 @@ const FinalExamForm: React.FC = () => {
               <div>Không tìm thấy ảnh câu hỏi {arrQuestion[currentQuestion]?.number}</div>
             );
           })()}
+        </div>
+        <div className="virtual-note">
+          <p>Ghi chú: Dùng phím điều hướng để đổi câu, phím số để chọn đáp án</p>
         </div>
         <div className="footer">
           <div className="left">
@@ -396,10 +443,10 @@ const FinalExamForm: React.FC = () => {
               )}</span>
             </div>
             <div className="question-nav-container">
-              {Array.from({ length: Math.ceil(arrQuestion.length / 10) }).map((_, columnIndex) => (
+              {Array.from({ length: Math.ceil(arrQuestion.length / itemsPerColumn) }).map((_, columnIndex) => (
                 <div className="question-nav" key={columnIndex}>
-                  {arrQuestion.slice(columnIndex * 10, columnIndex * 10 + 10).map((_, questionIndex) => {
-                    const globalIndex = columnIndex * 10 + questionIndex;
+                  {arrQuestion.slice(columnIndex * itemsPerColumn, columnIndex * itemsPerColumn + itemsPerColumn).map((_, questionIndex) => {
+                    const globalIndex = columnIndex * itemsPerColumn + questionIndex;
                     return (
                       <div
                         key={globalIndex}
@@ -426,7 +473,7 @@ const FinalExamForm: React.FC = () => {
               ))}
             </div>
           </div>
-          <button className="end-exam-btn" onClick={handleEndExam}>Kết Thúc</button>
+          <button className="end-exam-btn" onClick={handleEndExam}>KẾT THÚC</button>
         </div>
       </div>
 
@@ -455,6 +502,7 @@ const FinalExamForm: React.FC = () => {
         />
       )}
     </div>
+    </>
   );
 };
 
