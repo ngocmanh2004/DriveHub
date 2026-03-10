@@ -28,14 +28,13 @@ const FinalExamForm: React.FC = () => {
   const [nextSubjectName, setNextSubjectName] = useState<string | null>(null);
   const [untestedSubjects, setUntestedSubjects] = useState<Subject[]>([]); // Lưu danh sách môn chưa thi
   
-  // State quản lý số dòng mỗi cột (Mobile = 15, PC = 10)
   const [itemsPerColumn, setItemsPerColumn] = useState(10);
 
   useEffect(() => {
     const handleResize = () => {
       setItemsPerColumn(window.innerWidth <= 950 ? 15 : 10);
     };
-    handleResize(); // call initially
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -371,7 +370,6 @@ const FinalExamForm: React.FC = () => {
       </div>
       
       <div className={`exam-container`}>
-        {/* D-Pad Ảo Trái */}
         <div className="virtual-dpad">
           <div className="dpad-row dpad-top">
             <button className="dpad-btn up" onClick={() => handleQuestionChange(Math.max(0, currentQuestion - 1))} disabled={currentQuestion === 0}>▲</button>
@@ -383,7 +381,6 @@ const FinalExamForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Numpad Ảo Phải */}
         <div className="virtual-numpad">
           <div className="numpad-row">
             <button className={`numpad-btn ${selectedOptions[currentQuestion]?.includes(1) ? 'active' : ''}`} onClick={() => toggleOption(currentQuestion, 1)}>1</button>

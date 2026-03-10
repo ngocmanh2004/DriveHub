@@ -375,7 +375,6 @@ button:hover {
     }
 }
 
-/* Portrait Lock Screen */
 .portrait-lock-screen {
     display: none;
     position: fixed;
@@ -400,7 +399,6 @@ button:hover {
     }
 }
 
-/* Virtual Pads & Notes */
 .virtual-dpad, .virtual-numpad, .virtual-note {
     display: none;
 }
@@ -413,17 +411,17 @@ button:hover {
     .left-exam {
         width: 84%;
         padding: 0;
-        background-color: white; /* Bọc nguyên cột trái màu trắng */
+        background-color: white;
         height: 100vh;
         display: flex;
         flex-direction: column;
-        border-radius: 0; /* Xoá bo tròn bên dưới để liền mạch */
+        border-radius: 0; 
     }
     .right-exam {
         width: 16%;
         min-width: unset;
         padding: 0;
-        background-color: #f8f9fa; /* Có thể để màu xám nền hoặc màu gì đó */
+        background-color: #f8f9fa;
     }
 
     .question-section {
@@ -454,7 +452,7 @@ button:hover {
 
     .sidebar-section .top {
         overflow-y: auto;
-        height: calc(100% - 28px); /* Nhường thêm chỗ cho nút kết thúc */
+        height: calc(100% - 28px);
         padding-bottom: 2px;
     }
 
@@ -477,7 +475,6 @@ button:hover {
         align-items: stretch;
     }
 
-    /* Thu nhỏ nút câu hỏi trong Lưới */
     .question-nav {
         margin: 0;
         gap: 0px;
@@ -529,21 +526,20 @@ button:hover {
         font-size: 12px;
         font-weight: 500;
         text-align: center;
-        background-color: white; /* Trắng ngà che luôn phía dưới */
+        background-color: white;
     }
 
     .footer {
-        display: none !important; /* Xoá Footer Profile theo yêu cầu */
+        display: none !important;
     }
 
-    /* Virtual D-Pad styling - Layout phím laptop */
     .virtual-dpad {
         display: flex;
         flex-direction: column;
         align-items: center;
         position: fixed;
-        bottom: 25px; /* Nhích lên xíu */
-        left: 20px; /* Thụt lùi vào mép (không sát vách) */
+        bottom: 25px;
+        left: 20px;
         z-index: 100;
         opacity: 0.9;
         gap: 5px;
@@ -578,14 +574,13 @@ button:hover {
     }
     .dpad-btn:disabled { opacity: 0.4; }
 
-    /* Virtual Numpad styling */
     .virtual-numpad {
         display: flex;
         flex-direction: column;
         gap: 8px;
         position: fixed;
-        bottom: 25px; /* Nhích lên xíu */
-        right: 18%; /* Giữ margin cách phải */
+        bottom: 25px;
+        right: 18%;
         z-index: 100;
         opacity: 0.95;
         transform: scale(0.65);
