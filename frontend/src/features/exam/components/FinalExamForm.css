@@ -570,26 +570,22 @@ button:hover {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        border-radius: 6px; /* Bo góc mượt mà cho Keycaps */
+        border-radius: 6px;
         transition: transform 0.1s, filter 0.1s;
-        /* Đổ bóng 3D cực sắc nét tạo cảm giác nút nổi lên cao */
         filter: drop-shadow(3px 5px 6px rgba(0, 0, 0, 0.6));
     }
     .dpad-btn:active .keycap-img, .numpad-btn:active .keycap-img {
-        /* Khi bấm, nút lún xuống và cái bóng bị thu hẹp lại đậm hơn xíu */
         transform: translateY(3px) scale(0.95);
         filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.7));
     }
     .dpad-btn:disabled {
         cursor: not-allowed;
-        /* User note: Không làm mờ D-Pad khi disabled */
     }
     .numpad-btn:disabled {
-        opacity: 0.5; /* Phím 5, 6 làm mờ nhẹ */
+        opacity: 0.5;
         cursor: not-allowed;
     }
     .numpad-btn.active .keycap-img {
-        /* Phím số đang chọn sáng rực rỡ và vẫn giữ được cấu trúc bóng 3D */
         filter: drop-shadow(3px 5px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(255, 0, 0, 0.6)) brightness(0.9);
     }
     .virtual-numpad {
