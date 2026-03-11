@@ -6,7 +6,7 @@ import { Course, Status, Rank, Question, Exam, Student } from "../../../features
 import { Subject } from "../../../features/exam/types";
 import './LoginTestStudent.css';
 import { toast } from "react-toastify";
-import bannerImg from "../../../assets/image/banner/banner.jpg";
+
 
 // Type alias for backward compatibility
 type ThiSinh = Student;
@@ -272,7 +272,17 @@ const LoginTestStudent: React.FC = () => {
 
             {/* Banner */}
             <div className="st-banner-container">
-                <img src={bannerImg} alt="Banner" className="st-banner-img" />
+                <div className="st-banner-inner">
+                    <img
+                        src="https://anh.csgt.vn/logo-csgt.png"
+                        alt="Logo CSGT"
+                        className="st-banner-logo"
+                    />
+                    <div className="st-banner-text-block">
+                        <div className="st-banner-line1">BỘ CÔNG AN</div>
+                        <div className="st-banner-line2">CỤC CẢNH SÁT GIAO THÔNG</div>
+                    </div>
+                </div>
             </div>
 
             {/* Sub Header */}

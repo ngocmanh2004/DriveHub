@@ -629,24 +629,30 @@ button:hover {
 @media screen and (max-width: 950px) and (orientation: landscape) {
     .exam-container {
         position: relative;
+        flex-direction: row !important;
     }
 
+    /* ── Left panel ── */
     .left-exam {
-        width: 84%;
+        width: 77%;
         padding: 0;
         background-color: white;
         height: 100vh;
         display: flex;
         flex-direction: column;
-        border-radius: 0; 
-    }
-    .right-exam {
-        width: 16%;
-        min-width: unset;
-        padding: 0;
-        background-color: #f8f9fa;
+        border-radius: 0;
     }
 
+    /* ── Right panel ── */
+    .right-exam {
+        width: 18%;
+        min-width: 165px;
+        padding: 0;
+        background-color: #f8f9fa;
+        display: block !important;
+    }
+
+    /* ── Question area takes remaining height ── */
     .question-section {
         flex: 1;
         border-width: 0;
@@ -666,64 +672,71 @@ button:hover {
         font-size: 14px !important;
     }
 
+    /* ── Sidebar ── */
     .sidebar-section {
-        padding: 5px 2px;
-        height: calc(100vh - 10px);
+        padding: 1px 2px;
+        height: 100vh;
         display: flex;
         flex-direction: column;
+        overflow: visible;
     }
 
     .sidebar-section .top {
+        flex: 1;
         overflow-y: auto;
-        height: calc(100% - 28px);
-        padding-bottom: 2px;
+        padding-bottom: 0;
     }
 
     .time-remaining {
-        font-size: 1.5vh;
-        margin-bottom: 2px;
+        font-size: 11px;
+        margin-bottom: 1px;
         text-align: center;
         font-weight: bold;
+        color: #007BFF;
+        background: #fff;
+        padding: 1px 0;
     }
 
     .time-remaining span {
-        font-size: 14px;
+        font-size: 13px;
+        color: red;
     }
 
+    /* 2-column grid, compact rows to fit 15 each = 30 total */
     .question-nav-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1%;
-        height: 100%;
-        align-items: stretch;
+        gap: 1px;
+        margin: 0 1px;
     }
 
-    .question-nav {
-        margin: 0;
-        gap: 0px;
-        display: flex;
-        flex-direction: column;
-    }
     .question-btn {
         padding: 0;
-        margin-bottom: 1px;
+        margin-bottom: 0;
         border: 1px solid #ddd;
-        height: auto;
-        min-height: unset;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: white;
+        height: 18px;
     }
 
     .question-number {
         font-size: 8px;
         margin: 0 1px;
+        min-width: 12px;
+        font-weight: bold;
     }
 
     .answer-options {
-        flex: 5;
+        display: flex;
+        gap: 1px;
     }
 
     .option-cell span {
-        font-size: 7px;
-        margin-bottom: 0px;
+        font-size: 6px;
+        margin-bottom: 0;
     }
 
     .option-cell input[type="checkbox"] {
@@ -733,41 +746,46 @@ button:hover {
     }
 
     .end-exam-btn {
-        padding: 0;
-        font-size: 10px;
-        height: 20px;
-        margin-top: auto;
+        padding: 2px;
+        font-size: 11px;
+        height: 22px;
+        margin-top: 0;
+        border-radius: 0;
     }
 
+    /* ── Instruction note: fixed bottom-center, slim bar ── */
     .virtual-note {
-        display: flex;
-        justify-content: center;
-        align-items: flex-end;
-        height: 60px;
-        padding-bottom: 20px;
-        color: #777;
-        font-size: 12px;
-        font-weight: 500;
-        text-align: center;
-        background-color: white;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.85);
+        border-top: 1px solid #ddd;
+        font-size: 9px;
+        color: #666;
+        padding: 2px 20px;
+        white-space: nowrap;
+        pointer-events: none;
     }
 
     .footer {
         display: none !important;
     }
 
+    /* ── Virtual D-Pad ── */
     .virtual-dpad {
         display: flex;
         flex-direction: column;
         align-items: center;
         position: fixed;
-        bottom: 25px;
-        left: 20px;
+        bottom: 18px;
+        left: 18px;
         z-index: 100;
-        opacity: 0.9;
-        gap: 5px;
-        transform: scale(0.65);
+        transform: scale(0.75);
         transform-origin: bottom left;
+        gap: 5px;
+        opacity: 0.92;
     }
     .dpad-row {
         display: flex;
@@ -801,30 +819,114 @@ button:hover {
         transform: translateY(3px) scale(0.95);
         filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.7));
     }
-    .dpad-btn:disabled {
-        cursor: not-allowed;
+    .dpad-btn:disabled .keycap-img,
+    .numpad-btn:disabled .keycap-img {
+        opacity: 0.25 !important;
+        filter: grayscale(1) !important;
     }
-    .numpad-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    .numpad-btn.active .keycap-img {
-        filter: drop-shadow(3px 5px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 5px rgba(255, 0, 0, 0.6)) brightness(0.9);
-    }
+
+    /* ── Virtual Numpad ── */
     .virtual-numpad {
         display: flex;
         flex-direction: column;
         gap: 8px;
         position: fixed;
-        bottom: 25px;
-        right: 18%;
+        bottom: 18px;
+        right: 25%;
         z-index: 100;
         opacity: 0.95;
-        transform: scale(0.65);
+        transform: scale(0.75);
         transform-origin: bottom right;
     }
     .numpad-row {
         display: flex;
         gap: 10px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       iPhone 6/7/8 (375px height) landscape — fully independent
+       Note: iPhone 6 landscape = 375px height exactly
+    ══════════════════════════════════════════════════════ */
+    @media (max-height: 380px) {
+        /* Left panel wider, right panel narrower */
+        .left-exam { width: 81%; }
+        .right-exam {
+            width: 19%;
+            min-width: 108px;
+        }
+
+        /* Question section */
+        .question-section {
+            padding: 0 4px;
+        }
+        .question-section * {
+            font-size: 12px !important;
+        }
+
+        /* Sidebar timer — smaller */
+        .sidebar-section {
+            padding: 2px 1px;
+        }
+        .time-remaining {
+            font-size: 9px;
+            padding: 1px 0;
+            margin-bottom: 1px;
+        }
+        .time-remaining span {
+            font-size: 10px;
+        }
+
+        /* Question list — ultra compact for 375px screen */
+        .question-nav-container {
+            gap: 1px;
+            margin: 0;
+        }
+        .question-btn {
+            height: 14px;
+            margin-bottom: 0;
+            border-width: 1px;
+        }
+        .question-number {
+            font-size: 7px;
+            min-width: 10px;
+            margin: 0 1px;
+        }
+        .answer-options {
+            gap: 0;
+        }
+        .option-cell span {
+            font-size: 5px;
+        }
+        .option-cell input[type="checkbox"] {
+            width: 7px;
+            height: 7px;
+        }
+
+        /* End button */
+        .end-exam-btn {
+            height: 18px;
+            font-size: 8px;
+            padding: 1px;
+        }
+
+        /* Instruction note */
+        .virtual-note {
+            font-size: 7px;
+            padding: 1px 10px;
+        }
+
+        /* Virtual keys — much smaller on iPhone 6 */
+        .virtual-dpad {
+            bottom: 5px;
+            left: 5px;
+            transform: scale(0.5) !important;
+            gap: 3px;
+        }
+        .virtual-numpad {
+            bottom: 5px;
+            right: 21%;
+            transform: scale(0.5) !important;
+            gap: 5px;
+        }
     }
 }
