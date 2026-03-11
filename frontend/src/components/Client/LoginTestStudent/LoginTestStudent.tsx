@@ -361,7 +361,6 @@ const LoginTestStudent: React.FC = () => {
                             <span className="st-info-value">{(studentNow as any)?.DiaChi || "-"}</span>
                         </div>
                         
-                        {/* Ẩn process đi vì trong ảnh không có, hoặc có thể show ở đâu đó nếu cần */}
                         {studentNow && (
                              <div className="st-info-row" style={{marginTop: 5, fontSize: "0.85rem", fontStyle: "italic", display: "none"}}>
                                 <span className="st-info-label">Trạng thái:</span>
@@ -390,7 +389,6 @@ const LoginTestStudent: React.FC = () => {
                 </div>
             </div>
 
-            {/* Nút Reset dữ liệu (chỉ hiện trên dev/admin) */}
             {process.env.REACT_APP_BUILD != "buildlocal" && (
                 <button
                     className="reset-button"

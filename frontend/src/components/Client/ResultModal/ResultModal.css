@@ -316,9 +316,6 @@ button:hover {
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   iPhone 6/7/8 landscape (375px height) — độc lập với iPhone 12
-   ══════════════════════════════════════════════════════ */
 @media (max-width: 950px) and (orientation: landscape) and (max-height: 380px) {
   .modal-overlay {
     padding: 4px;
