@@ -1,42 +1,31 @@
-/* ============================================================
-   LoginTestStudent.css
-   Font: Arial/sans-serif (Desktop App style)
-   Theme: Desktop Window Application Clone
-   ============================================================ */
 
-/* ============================================================
-   Variables
-   ============================================================ */
    :root {
-    --win-bg: #e0ecee; /* Light cyan background like the image */
+    --win-bg: #e0ecee;
     --win-border: #1e6bc7;
     --win-title-bg: #c94040; 
     
-    --win-header-orange: #ff7f00; /* For SÁT HẠCH CẤP GPLX MÔ TÔ */
-    --win-label-blue: #0000ff; /* Đơn vị:, Khóa:, Số báo danh:, etc. */
+    --win-header-orange: #ff7f00;
+    --win-label-blue: #0000ff;
     --win-text: #000;
     
-    --win-btn-bg: #ffe4c4; /* Nút Kiểm tra thông tin, Đăng nhập, Hủy bỏ bg */
+    --win-btn-bg: #ffe4c4;
     --win-btn-border: #f5bca9;
-    --win-btn-text: #8b4513; /* Nâu đất cho Đăng nhập/Hủy bỏ */
-    --win-btn-text-blue: #0000ff; /* Xanh cho Kiểm tra thông tin */
+    --win-btn-text: #8b4513;
+    --win-btn-text-blue: #0000ff;
     
     --win-input-border: #a9a9a9;
-    --win-sbd-border: #1e90ff; /* Mép dưới của input SBD đậm hơn */
+    --win-sbd-border: #1e90ff;
     
     --win-r-sm: 4px;
     --win-r-md: 8px;
   }
-  
-  /* ============================================================
-     Page wrapper
-     ============================================================ */
+
   .app-teststudent {
     font-family: Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     
     width: 100%;
-    max-width: 800px; /* Phù hợp với tỷ lệ của 1 app desktop */
+    max-width: 800px;
     margin: 20px auto;
     
     background: var(--win-bg);
@@ -50,9 +39,7 @@
     overflow: hidden;
   }
   
-  /* ============================================================
-     Title Bar & Header Elements
-     ============================================================ */
+
   .st-title-bar {
     display: flex;
     justify-content: space-between;
@@ -81,7 +68,6 @@
     background-color: #c9302c;
   }
   
-  /* Banner */
   .st-banner-container {
     width: 100%;
     background: #fff;
@@ -93,10 +79,9 @@
     display: block;
     height: auto;
     max-height: 150px;
-    object-fit: fill; /* Ép giãn vừa khung như ảnh mẫu */
+    object-fit: fill;
   }
   
-  /* Sub Header Orange */
   .st-sub-header {
     background-color: var(--win-header-orange);
     color: #0000ff;
@@ -106,10 +91,7 @@
     border-bottom: 1px solid var(--win-border);
     text-transform: uppercase;
   }
-  
-  /* ============================================================
-     Main Content
-     ============================================================ */
+
   .st-main-content {
     padding: 16px;
     display: flex;
@@ -117,7 +99,6 @@
     gap: 20px;
   }
   
-  /* Viền bọc toàn bộ nội dung dưới header */
   .st-main-content {
     border: 1px solid #a0a0a0;
     border-radius: 12px;
@@ -125,9 +106,7 @@
     background: transparent;
   }
   
-  /* ============================================================
-     Form Rows
-     ============================================================ */
+
   .st-search-form {
     display: flex;
     flex-direction: column;
@@ -146,7 +125,7 @@
     font-weight: bold;
     color: var(--win-label-blue);
     font-size: 15px;
-    width: 120px; /* Fixed width for alignment */
+    width: 120px;
     text-align: left;
   }
   
@@ -165,7 +144,7 @@
     background-color: #fff;
   }
   
-  /* Row chứa SBD & Nút kiểm tra */
+
   .st-sbd-row {
     align-items: center;
   }
@@ -178,7 +157,7 @@
   
   .st-sbd-input {
     width: 80px;
-    color: red !important; /* Chữ đỏ */
+    color: red !important;
     border: none !important;
     border-bottom: 2px solid var(--win-sbd-border) !important;
     background: white;
@@ -187,7 +166,7 @@
     outline: none;
   }
   
-  /* Button Kiểm tra thông tin */
+
   .st-btn-check-info {
     display: flex;
     align-items: center;
@@ -206,7 +185,7 @@
   }
   
   .st-btn-check-icon {
-    /* Giả lập icon list */
+
     width: 24px;
     height: 24px;
     background-image: repeating-linear-gradient(
@@ -228,9 +207,7 @@
     line-height: 1.2;
   }
   
-  /* ============================================================
-     Candidate Info Panel
-     ============================================================ */
+
   .st-candidate-panel {
     display: flex;
     gap: 30px;
@@ -272,12 +249,10 @@
   .st-info-value {
     color: var(--win-label-blue);
     font-weight: bold;
-    word-break: break-word; /* Fix text overflow */
+    word-break: break-word;
   }
   
-  /* ============================================================
-     Footer Buttons
-     ============================================================ */
+
   .st-footer-buttons {
     display: flex;
     justify-content: center;
@@ -329,7 +304,7 @@
     border: 1px solid #ccc;
   }
   
-  /* Container viền của form  */
+
   .st-main-content-inner {
       border: 1px solid #a0a0a0;
       border-radius: 8px;
@@ -348,7 +323,7 @@
         width: 100%;
     }
   
-    /* Mentor yêu cầu ẩn vĩnh viễn trên mobile */
+
     .st-title-bar,
     .reset-button {
         display: none !important;
@@ -416,9 +391,7 @@
     }
   }
   
-  /* ============================================================
-     Landscape Optimizations (Small Heights)
-     ============================================================ */
+
   @media (max-height: 500px) and (orientation: landscape) {
     .app-teststudent {
         max-width: 850px;
@@ -526,7 +499,5 @@
         white-space: nowrap;
         border-radius: 4px;
     }
-    .st-btn-cancel{
-      margin-right: 250px;
-    }
+
   }
