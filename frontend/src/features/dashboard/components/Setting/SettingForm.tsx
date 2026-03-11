@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Cookies from 'js-cookie';
-import useApiService from "../../../services/useApiService"; // Sử dụng hook mới
-import { ApiResponse, UserStatus, Rank, Subject } from "../../../interfaces";
+import useApiService from "../../../../services/useApiService";
+import { ApiResponse, UserStatus, Rank, Subject } from "../../../../interfaces";
 import "./SettingForm.css";
 // Định nghĩa kiểu dữ liệu cho trạng thái người dùng
 
 const Setting: React.FC = () => {
-  const { get, post, put, del } = useApiService(); // Sử dụng các phương thức từ useApiService
+  const { get, post, put } = useApiService();
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
   const [ranks, setRanks] = useState<Rank[]>([]);
@@ -112,7 +111,7 @@ const Setting: React.FC = () => {
   };
 
   // Xóa trạng thái
-  const handleDeleteStatus = async (id: number) => {
+  const handleDeleteStatus = async (_id: number) => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa trạng thái này?");
     if (!confirmDelete) return;
 
@@ -163,7 +162,7 @@ const Setting: React.FC = () => {
   };
 
   // Xóa trạng thái
-  const handleDeleteRank = async (id: number) => {
+  const handleDeleteRank = async (_id: number) => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa trạng thái này?");
     if (!confirmDelete) return;
 

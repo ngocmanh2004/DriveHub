@@ -1,21 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../features/auth/hooks/useAuth";
 
 const Sidebar: React.FC = () => {
+  const { role } = useAuth();
+
   return (
     <nav className="sidebar sidebar-offcanvas" id="sidebar">
       <ul className="nav">
         <li className="nav-item nav-profile">
           <Link to="/dashboard" className="nav-link">
             <div className="nav-profile-image">
-              <img src="/assets/images/faces/face1.jpg" alt="profile" />
+              <i className="mdi mdi-account-circle" style={{ fontSize: 42, color: '#adb5bd' }}></i>
               <span className="login-status online"></span>
             </div>
             <div className="nav-profile-text d-flex flex-column pe-3">
-              <span className="font-weight-medium mb-2">Khả Vy</span>
-              <span className="font-weight-normal">99.000.000 VNĐ</span>
+              <span className="font-weight-medium mb-2">{role || 'Admin'}</span>
+              <span className="font-weight-normal text-muted">Quản trị viên</span>
             </div>
-            {/* <span className="badge badge-danger text-white ms-3 rounded">3</span> */}
           </Link>
         </li>
         <li className="nav-item">
@@ -46,11 +48,6 @@ const Sidebar: React.FC = () => {
               <li className="nav-item">
                 <Link className="nav-link" to="/dashboard/upload">
                   Upload File
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/dashboard/detect">
-                  Detect Text
                 </Link>
               </li>
               <li className="nav-item">

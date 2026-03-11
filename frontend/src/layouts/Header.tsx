@@ -4,10 +4,19 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuth } from '../features/auth/hooks/useAuth';
 import './Header.css';
 
 export const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, role, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
   useEffect(() => {
     const menuTrigger = document.querySelector('.menu-trigger');
     const navMenu = document.querySelector('.main-nav .nav');
@@ -100,6 +109,21 @@ export const Header: React.FC = () => {
                   </ul>
                 </li>
               </ul>
+
+              <div className="header-auth">
+                {isAuthenticated ? (
+                  <>
+                    <span className="header-role">{role}</span>
+                    <button className="header-logout-btn" onClick={handleLogout}>
+                      Đăng xuất
+                    </button>
+                  </>
+                ) : (
+                  <NavLink to="/login" className="header-login-btn">
+                    Đăng nhập
+                  </NavLink>
+                )}
+              </div>
 
               <button className="menu-trigger" aria-label="Menu">
                 <span className="hb-bar"></span>

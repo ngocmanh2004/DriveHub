@@ -31,8 +31,7 @@ const instance: AxiosInstance = axios.create({
 // Request interceptor để gắn token vào header (nếu cần)
 instance.interceptors.request.use(
   (config) => {
-    const token = cookies.get("jwt") || localStorage.getItem('token');  // Lấy token từ cookie thay vì localStorage
-    console.log('Token from cookie:', token);
+    const token = cookies.get("jwt") || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -51,10 +50,7 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response) {
       const { status, data } = error.response;
-      console.log('check data', data)
-      // Trích xuất thông tin lỗi từ backend
       const errorMessage = data?.EM || 'Đã có lỗi xảy ra. Vui lòng thử lại!';
-      console.log('chekc errorMessage', errorMessage)
       // Hiển thị thông báo toast khi có lỗi
       toast.error(errorMessage, {
         position: "top-right",

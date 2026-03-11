@@ -1,6 +1,6 @@
-import React, { forwardRef, useEffect } from "react";
+import React from "react";
 import moment from "moment";
-import { Exam, ThiSinh } from "../../../interfaces";
+import { Exam, ThiSinh } from "../../../../interfaces";
 
 // const data = [
 //     Array.from({ length: 10 }, (_, index) => index + 1), // Giá trị cho hàng 2

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useApi } from "../../../shared/hooks";
-import { ApiResponse } from "../../../core/types";
-import { Course, Status, Rank, Question, Exam, Student } from "../../../features/student/types";
-import { Subject } from "../../../features/exam/types";
+import { useApi } from "../../../../shared/hooks";
+import { ApiResponse } from "../../../../core/types";
+import { Course, Status, Rank, Question, Exam, Student } from "../../../../features/student/types";
+import { Subject } from "../../../../features/exam/types";
 import './LoginTestStudent.css';
 import { toast } from "react-toastify";
 
@@ -152,7 +152,7 @@ const LoginTestStudent: React.FC = () => {
     // Tự động chọn môn học mà thí sinh chưa thi
     const autoSelectSubject = (student: ThiSinh, subjects: Subject[]) => {
         const untestedSubject = subjects.find(subject =>
-            !student.exams?.some(exam => exam.IDSubject === subject.id && exam.result !== null)
+            !student.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
         );
         if (untestedSubject) {
             setSelectedSubject(untestedSubject.id);
@@ -185,8 +185,8 @@ const LoginTestStudent: React.FC = () => {
         }
 
         // Kiểm tra nếu thí sinh đã thi môn này
-        const existingExam = studentNow.exams?.find(exam => exam.IDSubject == selectedSubject);
-        const existingSubjectInRank = studentNow?.rank?.subjects?.some(e => e.id == Number(selectedSubject))
+        const existingExam = studentNow.exams?.find((exam: Exam) => exam.IDSubject == selectedSubject);
+        const existingSubjectInRank = studentNow?.rank?.subjects?.some((e: Subject) => e.id == Number(selectedSubject))
         if (!existingSubjectInRank) {
             toast.warning("Môn học của khóa không hợp lệ, vui lòng click vào môn học trong bảng hoặc chọn lại môn học");
             return;
@@ -216,7 +216,7 @@ const LoginTestStudent: React.FC = () => {
                     </thead>
                     <tbody>
                         {subjectList.map(subject => {
-                            const exam = studentNow?.exams?.find(e => e.IDSubject === subject.id);
+                            const exam = studentNow?.exams?.find((e: Exam) => e.IDSubject === subject.id);
                             // Thêm class cho hàng đang được chọn
                             const isSelected = Number(selectedSubject) == subject.id;
                             const rowClass = isSelected ? "selected-row" : "";

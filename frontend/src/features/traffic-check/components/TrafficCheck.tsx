@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './TrafficCheck.css';
 import type { ViolationRecord } from '../types';
-import instance from '../../../axios';
+import httpClient from '../../../shared/services/httpClient';
 
 const VEHICLE_TYPES = [
   { value: '1', label: 'Xe ô tô', icon: 'airport_shuttle' },
@@ -29,7 +29,7 @@ const TrafficCheck: React.FC = () => {
     setSearched(true);
 
     try {
-      const response = await instance.post('/api/traffic-check/lookup', {
+      const response = await httpClient.post('/api/traffic-check/lookup', {
         BienKiemSoat: bienSo.trim(),
         LoaiXe: loaiXe,
       });
@@ -133,7 +133,7 @@ const TrafficCheck: React.FC = () => {
                     <div className="tc-v-body">
                       <div className="tc-v-section">
                         <h3>Thông tin phương tiện</h3>
-                        <p><strong>Loại xe:</strong> {VEHICLE_TYPES.find(v => v.value === loaiXe)?.label}</p>
+                        <p><strong>Loại xe:</strong> {selectedVehicle?.label}</p>
                         <p><strong>Màu biển:</strong> {item.mau_bien || 'Nền màu trắng, chữ và số màu đen'}</p>
                       </div>
                       <div className="tc-v-section">

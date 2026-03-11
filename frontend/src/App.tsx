@@ -24,7 +24,7 @@ import { Header, Footer } from './layouts';
 // Legacy imports (to be migrated)
 import HomePage from './pages/HomePage/HomePage';
 import DashBoardRoute from './pages/DashBoardPage/DashBoardRoute';
-import LoginTestStudent from './components/Client/LoginTestStudent/LoginTestStudent';
+import LoginTestStudent from './features/exam/components/LoginTestStudent/LoginTestStudent';
 import { FinalExamForm } from './features/exam';
 import QrScannerPage from './pages/HomePage/QRScanner/QrScanner';
 import TrafficCheck from './features/traffic-check/components/TrafficCheck';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { ThiSinh, Test, ApiResponse, Subject, Question, Student } from "../../../interfaces";
 import useApiService from "../../../services/useApiService";
-import ResultModal from '../../../components/Client/ResultModal/ResultModal';
+import ResultModal from './ResultModal/ResultModal';
 import { toast } from 'react-toastify';
 import './FinalExamForm.css';
 import { VirtualDPad } from './VirtualDPad';

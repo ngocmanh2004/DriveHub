@@ -7,9 +7,9 @@ import PurchaseHistory from './PurchaseHistory';
 import TaskListAndCustomers from './TaskListAndCustomers';
 import WeatherAndActivity from './WeatherAndActivity';
 import DashboardWidgets from './DashboardWidgets';
-import Setting from '../../components/DashBoard/Setting/SettingForm';
-import UploadFiles from '../../components/DashBoard/upload/UploadFiles';
-import Printer from '../../components/DashBoard/Printer/Printer'; // Import Printer component
+import Setting from '../../features/dashboard/components/Setting/SettingForm';
+import UploadFiles from '../../features/dashboard/components/Upload/UploadFiles';
+import Printer from '../../features/dashboard/components/Printer/Printer';
 // import Detect from '../../components/DashBoard/upload/Detect';
 
 const DashBoardRoute: React.FC = () => {

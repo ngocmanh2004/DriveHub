@@ -16,22 +16,10 @@ import { MESSAGES } from '../../core/constants/messages';
 const cookies = new Cookies();
 
 /**
- * Check if the device is mobile
- */
-const isMobileDevice = (): boolean => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
-};
-
-/**
- * Get the base URL based on device and environment
+ * Get the base URL based on environment
  */
 const getBaseUrl = (): string => {
   const env = getCurrentEnvironment();
-  if (isMobileDevice() && env === 'development') {
-    return 'http://192.168.1.254:8080';
-  }
   return ENVIRONMENT_CONFIGS[env]?.API_BASE_URL || 'http://localhost:8080';
 };
 

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useApi } from "../../../shared/hooks";
-import { ApiResponse } from "../../../core/types";
-import { Rank, Course } from "../../../features/student/types";
+import React, { useState, useEffect } from "react";
+import { useApi } from "../../../../shared/hooks";
+import { ApiResponse } from "../../../../core/types";
+import { Rank, Course } from "../../../../features/student/types";
 import "./UploadFiles.css";
 
 const UploadFiles: React.FC = () => {
@@ -13,11 +13,8 @@ const UploadFiles: React.FC = () => {
   const [selectedFileExcelForUpdate, setSelectedFileExcelForUpdate] = useState<File | null>(null);
 
 
-  const [khoaHocList, setKhoaHocList] = useState<any[]>([]); // Chuyển sang any[]
-  const [subjectList, setSubjectList] = useState<any[]>([]); // Chuyển sang any[]
-
-  const [selectedSubject, setSelectedSubject] = useState<any>(null);
-  const [selectedKhoaHoc, setSelectedKhoaHoc] = useState<any>(null); // Sử dụng kiểu any
+  const [khoaHocList, setKhoaHocList] = useState<any[]>([]);
+  const [selectedKhoaHoc, setSelectedKhoaHoc] = useState<any>(null);
 
   const [ranks, setRanks] = useState<Rank[]>([]);
   const [selectedRank, setSelectedRank] = useState<any>(null);
@@ -58,12 +55,6 @@ const UploadFiles: React.FC = () => {
     setSelectedKhoaHoc(event.target.value);
   };
 
-  // Xử lý khi chọn khóa học
-  const handleSubjectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSubject(event.target.value);
-  };
-
-  // Xử lý khi chọn khóa học
   const handleRankChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRank(Number(event.target.value));
   };

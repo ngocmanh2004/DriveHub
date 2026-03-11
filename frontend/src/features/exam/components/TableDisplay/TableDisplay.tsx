@@ -45,7 +45,7 @@ const TableDisplay: React.FC<TableDisplayProps> = ({ arrQuestion, selectedOption
                 key={index}
                 onMouseEnter={() =>
                   setHoveredImage(
-                    require(`../../../assets/600question_2025/${question.number}.jpg`)
+                    require(`../../../../assets/600question_2025/${question.number}.jpg`)
                   )
                 }
                 onMouseLeave={() => setHoveredImage(null)}
@@ -53,7 +53,7 @@ const TableDisplay: React.FC<TableDisplayProps> = ({ arrQuestion, selectedOption
                 <td>{index + 1}</td> {/* Hiển thị số thứ tự */}
                 <td className="image-column">
                   <img
-                    src={require(`../../../assets/600question_2025/${question.number}.jpg`)}
+                    src={require(`../../../../assets/600question_2025/${question.number}.jpg`)}
                     alt={`Câu ${question.number}`}
                   />
                 </td>

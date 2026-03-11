@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Table, Form } from "react-bootstrap";
 import { ThiSinh, ApiResponse, Course, Status, Subject, Rank, Question, Exam, Student } from "../../interfaces";
 import useApiService from "../../services/useApiService"; // Sử dụng hook mới
-import ExamFormPrint from "../../components/DashBoard/PrintLayout/PrintLayout";
-import PrintAllExamLayout from "../../components/DashBoard/PrintLayout/PrintAllExamLayout";
+import ExamFormPrint from "../../features/dashboard/components/PrintLayout/PrintLayout";
+import PrintAllExamLayout from "../../features/dashboard/components/PrintLayout/PrintAllExamLayout";
 import constants from "../../constant/constant";
 
 import "./DashBoardPage.css";
