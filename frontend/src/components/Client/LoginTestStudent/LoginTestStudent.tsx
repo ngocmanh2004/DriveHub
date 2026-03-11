@@ -285,15 +285,12 @@ const LoginTestStudent: React.FC = () => {
                 </div>
             </div>
 
-            {/* Sub Header */}
             <div className="st-sub-header">
                 SÁT HẠCH CẤP GPLX MÔ TÔ
             </div>
 
-            {/* Main Content Area */}
             <div className="st-main-content">
                 
-                {/* Search Form */}
                 <div className="st-search-form">
                     <div className="st-form-row">
                         <label>Khóa:</label>
@@ -329,7 +326,6 @@ const LoginTestStudent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Candidate Info */}
                 <div className="st-candidate-panel">
                     <div className="st-avatar-box">
                         {studentNow?.Anh ? (
@@ -370,7 +366,6 @@ const LoginTestStudent: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Footer Buttons */}
                 <div className="st-footer-buttons">
                     <button 
                         className="st-btn-login"

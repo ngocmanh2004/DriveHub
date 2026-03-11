@@ -398,7 +398,6 @@ button:hover {
     width: fit-content;
   }
 
-  /* Table columns for iPhone 6 */
   .table-result th,
   .table-result td {
     padding: 4px 3px;
