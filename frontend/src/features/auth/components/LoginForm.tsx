@@ -18,6 +18,7 @@ export const LoginForm: React.FC = () => {
   const [userEmail, setUserEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [isMezonLoading, setIsMezonLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setAuth, isAuthenticated } = useAuth();
   const popupRef = useRef<Window | null>(null);
@@ -34,12 +35,14 @@ export const LoginForm: React.FC = () => {
       }
 
       if (data.type === 'success' && data.token) {
+        setIsMezonLoading(false);
         const role = data.role || 'User';
         const username = data.username || 'User';
         setAuth(data.token, role, username);
         toast.success('Đăng nhập Mezon thành công!');
         navigate('/dashboard');
       } else if (data.type === 'error') {
+        setIsMezonLoading(false);
         toast.error(data.message || 'Đăng nhập Mezon thất bại.');
       }
 
@@ -55,6 +58,23 @@ export const LoginForm: React.FC = () => {
     };
   }, [navigate, setAuth]);
 
+  useEffect(() => {
+    if (!isMezonLoading) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      if (popupRef.current && popupRef.current.closed) {
+        popupRef.current = null;
+        setIsMezonLoading(false);
+      }
+    }, 400);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [isMezonLoading]);
+
   const handleMezonLogin = (): void => {
     const mezonClientId = process.env.REACT_APP_MEZON_CLIENT_ID;
     const redirectUri = process.env.REACT_APP_MEZON_REDIRECT_URI || 'https://localhost:3000/mezon-callback';
@@ -62,6 +82,7 @@ export const LoginForm: React.FC = () => {
     const mezonScope = process.env.REACT_APP_MEZON_SCOPE || 'openid offline';
 
     if (!mezonClientId) {
+      setIsMezonLoading(false);
       toast.error('Thiếu cấu hình REACT_APP_MEZON_CLIENT_ID');
       return;
     }
@@ -74,6 +95,7 @@ export const LoginForm: React.FC = () => {
       .join('');
 
     sessionStorage.setItem('mezon_oauth_state', state);
+    setIsMezonLoading(true);
 
     const params = new URLSearchParams({
       client_id: mezonClientId,
@@ -278,6 +300,7 @@ export const LoginForm: React.FC = () => {
             <button
               type="button"
               className="lf-submit-btn"
+              disabled={isMezonLoading}
               style={{
                 marginTop: '14px',
                 display: 'flex',
@@ -292,8 +315,26 @@ export const LoginForm: React.FC = () => {
                 alt="Mezon"
                 style={{ width: '18px', height: '18px', borderRadius: '4px', objectFit: 'cover' }}
               />
-              Đăng nhập bằng Mezon
+              {isMezonLoading ? 'Đang chờ xác thực Mezon...' : 'Đăng nhập bằng Mezon'}
             </button>
+
+            {isMezonLoading ? (
+              <div
+                style={{
+                  marginTop: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  color: '#0b5ed7',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                }}
+              >
+                <span className="lf-spinner"></span>
+                Đang đăng nhập Mezon, vui lòng chờ...
+              </div>
+            ) : null}
 
             <p className="lf-register-text">
               Chưa có tài khoản?&nbsp;

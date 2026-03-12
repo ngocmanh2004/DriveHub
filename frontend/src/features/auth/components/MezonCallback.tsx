@@ -30,6 +30,7 @@ const extractErrorMessage = (payload: any): string => {
 
 export const MezonCallback: React.FC = () => {
   const { setAuth } = useAuth();
+  const isPopupFlow = typeof window !== 'undefined' && Boolean(window.opener && window.opener !== window);
   const [error, setError] = useState<string>('');
   const [status, setStatus] = useState<string>('Dang xu ly dang nhap Mezon...');
   const hasHandledCallbackRef = useRef<boolean>(false);
@@ -42,7 +43,6 @@ export const MezonCallback: React.FC = () => {
     hasHandledCallbackRef.current = true;
 
     const processCallback = async () => {
-      const isPopupFlow = Boolean(window.opener && window.opener !== window);
       const notifyOpener = (payload: { type: 'success' | 'error'; token?: string; role?: string; username?: string; message?: string }) => {
         if (isPopupFlow && window.opener && !window.opener.closed) {
           window.opener.postMessage(
@@ -157,7 +157,11 @@ export const MezonCallback: React.FC = () => {
     };
 
     processCallback();
-  }, [setAuth]);
+  }, [isPopupFlow, setAuth]);
+
+  if (isPopupFlow) {
+    return null;
+  }
 
   return (
     <div
