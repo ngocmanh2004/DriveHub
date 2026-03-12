@@ -3,7 +3,7 @@
  * @module features/auth/components/LoginForm
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useApi } from '../../../shared/hooks/useApi';
@@ -20,6 +20,39 @@ export const LoginForm: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setAuth, isAuthenticated } = useAuth();
+  const popupRef = useRef<Window | null>(null);
+
+  useEffect(() => {
+    const onOAuthMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      const data = event.data;
+      if (!data || data.source !== 'mezon-oauth') {
+        return;
+      }
+
+      if (data.type === 'success' && data.token) {
+        const role = data.role || 'User';
+        setAuth(data.token, role);
+        toast.success('Đăng nhập Mezon thành công!');
+        navigate('/dashboard');
+      } else if (data.type === 'error') {
+        toast.error(data.message || 'Đăng nhập Mezon thất bại.');
+      }
+
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.close();
+      }
+      popupRef.current = null;
+    };
+
+    window.addEventListener('message', onOAuthMessage);
+    return () => {
+      window.removeEventListener('message', onOAuthMessage);
+    };
+  }, [navigate, setAuth]);
 
   const handleMezonLogin = (): void => {
     const mezonClientId = process.env.REACT_APP_MEZON_CLIENT_ID;
@@ -40,6 +73,7 @@ export const LoginForm: React.FC = () => {
       .join('');
 
     sessionStorage.setItem('mezon_oauth_state', state);
+    localStorage.setItem('mezon_oauth_state', state);
 
     const params = new URLSearchParams({
       client_id: mezonClientId,
@@ -49,7 +83,57 @@ export const LoginForm: React.FC = () => {
       state,
     });
 
-    window.location.href = `${authorizeUrl}?${params.toString()}`;
+    const oauthUrl = `${authorizeUrl}?${params.toString()}`;
+
+    const isCompactViewport = window.innerWidth < 768;
+    if (isCompactViewport) {
+      window.location.href = oauthUrl;
+      return;
+    }
+
+    const width = Math.max(760, Math.min(900, Math.round(window.outerWidth * 0.68)));
+    const height = Math.max(620, Math.min(700, Math.round(window.outerHeight * 0.82)));
+
+    const dualScreenLeft = typeof window.screenLeft === 'number' ? window.screenLeft : window.screenX;
+    const dualScreenTop = typeof window.screenTop === 'number' ? window.screenTop : window.screenY;
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || window.screen.width;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || window.screen.height;
+
+    const left = dualScreenLeft + Math.max(0, (viewportWidth - width) / 2);
+    const top = dualScreenTop + Math.max(0, (viewportHeight - height) / 2);
+
+    const popupFeatures = [
+      `width=${width}`,
+      `height=${height}`,
+      `left=${Math.round(left)}`,
+      `top=${Math.round(top)}`,
+      'resizable=yes',
+      'scrollbars=yes',
+      'toolbar=no',
+      'menubar=no',
+      'status=no'
+    ].join(',');
+
+    const popup = window.open(
+      oauthUrl,
+      'mezon_oauth_popup',
+      popupFeatures
+    );
+
+    if (!popup) {
+      toast.error('Trình duyệt đã chặn popup. Đang chuyển sang đăng nhập thông thường...');
+      window.location.href = oauthUrl;
+      return;
+    }
+
+    popupRef.current = popup;
+    try {
+      popup.resizeTo(width, height);
+      popup.moveTo(Math.round(left), Math.round(top));
+    } catch (e) {
+      // Some browsers can block move/resize operations.
+    }
+    popup.focus();
   };
 
   useEffect(() => {

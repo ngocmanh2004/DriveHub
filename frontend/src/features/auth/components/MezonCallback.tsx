@@ -42,23 +42,48 @@ export const MezonCallback: React.FC = () => {
     hasHandledCallbackRef.current = true;
 
     const processCallback = async () => {
+      const isPopupFlow = Boolean(window.opener && window.opener !== window);
+      const notifyOpener = (payload: { type: 'success' | 'error'; token?: string; role?: string; message?: string }) => {
+        if (isPopupFlow && window.opener && !window.opener.closed) {
+          window.opener.postMessage(
+            {
+              source: 'mezon-oauth',
+              ...payload,
+            },
+            window.location.origin
+          );
+        }
+      };
+
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code') || '';
         const state = urlParams.get('state') || '';
-        const storedState = sessionStorage.getItem('mezon_oauth_state') || '';
+        const sessionState = sessionStorage.getItem('mezon_oauth_state') || '';
+        const localState = localStorage.getItem('mezon_oauth_state') || '';
+        const isStateValid = Boolean(state) && (state === sessionState || state === localState);
         const redirectUri = process.env.REACT_APP_MEZON_REDIRECT_URI || 'https://localhost:3000/mezon-callback';
         const backendUrl = process.env.REACT_APP_MEZON_BACKEND_URL || 'http://localhost:8080';
 
         if (!code || !state) {
-          setError('Thieu code hoac state trong callback URL.');
+          const message = 'Thieu code hoac state trong callback URL.';
+          setError(message);
           setStatus('Dang nhap that bai');
+          notifyOpener({ type: 'error', message });
+          if (isPopupFlow) {
+            window.close();
+          }
           return;
         }
 
-        if (!storedState || storedState !== state) {
-          setError('State mismatch. Vui long dang nhap lai.');
+        if (!isStateValid) {
+          const message = 'State mismatch. Vui long dang nhap lai.';
+          setError(message);
           setStatus('Dang nhap that bai');
+          notifyOpener({ type: 'error', message });
+          if (isPopupFlow) {
+            window.close();
+          }
           return;
         }
 
@@ -81,25 +106,54 @@ export const MezonCallback: React.FC = () => {
           const message = extractErrorMessage(parsed) || `HTTP ${response.status}`;
           setError(message);
           setStatus('Dang nhap that bai');
+          notifyOpener({ type: 'error', message });
+          if (isPopupFlow) {
+            window.close();
+          }
           return;
         }
 
         if (!parsed || parsed?.EC !== 0 || !parsed?.DT?.access_token) {
-          setError(extractErrorMessage(parsed));
+          const message = extractErrorMessage(parsed);
+          setError(message);
           setStatus('Dang nhap that bai');
+          notifyOpener({ type: 'error', message });
+          if (isPopupFlow) {
+            window.close();
+          }
           return;
         }
 
         const role = parsed?.DT?.groupWithRoles?.name || 'User';
-        setAuth(parsed.DT.access_token, role);
         sessionStorage.removeItem('mezon_oauth_state');
+        localStorage.removeItem('mezon_oauth_state');
+
+        if (isPopupFlow) {
+          notifyOpener({ type: 'success', token: parsed.DT.access_token, role });
+          window.close();
+          return;
+        }
+
+        setAuth(parsed.DT.access_token, role);
 
         toast.success('Dang nhap Mezon thanh cong!');
         setStatus('Dang nhap thanh cong, dang chuyen huong...');
         window.location.replace('/#/dashboard');
       } catch (err: any) {
-        setError(err?.message || 'Khong the xu ly callback Mezon.');
+        const message = err?.message || 'Khong the xu ly callback Mezon.';
+        setError(message);
         setStatus('Dang nhap that bai');
+        if (window.opener && window.opener !== window && !window.opener.closed) {
+          window.opener.postMessage(
+            {
+              source: 'mezon-oauth',
+              type: 'error',
+              message,
+            },
+            window.location.origin
+          );
+          window.close();
+        }
       }
     };
 
