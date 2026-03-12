@@ -8,7 +8,8 @@ export interface AuthContextType {
   isAuthLoading: boolean;
   role: string | null;
   displayName: string | null;
-  setAuth: (token: string, role: string, displayName?: string) => void;
+  avatarUrl: string | null;
+  setAuth: (token: string, role: string, displayName?: string, avatarUrl?: string | null) => void;
   logout: () => void;
   getToken: () => string | null;
 }
@@ -34,5 +35,6 @@ export interface AuthState {
   isAuthenticated: boolean;
   role: string | null;
   displayName: string | null;
+  avatarUrl: string | null;
   token: string | null;
 }

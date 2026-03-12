@@ -4,7 +4,9 @@ import { useAuth } from "../../features/auth/hooks/useAuth";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { role, displayName, logout } = useAuth();
+  const { role, displayName, avatarUrl, logout } = useAuth();
+  const defaultAvatar = 'https://gravatar.com/avatar/d302cbc4526bf50e64befe198736824c?s=400&d=robohash&r=x';
+  const resolvedAvatar = avatarUrl || defaultAvatar;
 
   const handleToggleSidebar = () => {
     document.body.classList.toggle("sidebar-icon-only");
@@ -41,7 +43,18 @@ const Header: React.FC = () => {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i className="mdi mdi-account-circle me-2" style={{ fontSize: 22 }}></i>
+              <img
+                src={resolvedAvatar}
+                alt="User avatar"
+                className="me-2"
+                style={{ width: 34, height: 34, borderRadius: '50%', objectFit: 'cover', border: '1px solid #d1d5db' }}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (target.src !== defaultAvatar) {
+                    target.src = defaultAvatar;
+                  }
+                }}
+              />
               <span className="profile-name">{displayName || role || 'Admin'}</span>
             </a>
             <div

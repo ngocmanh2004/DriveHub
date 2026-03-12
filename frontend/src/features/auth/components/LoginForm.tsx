@@ -38,7 +38,7 @@ export const LoginForm: React.FC = () => {
         setIsMezonLoading(false);
         const role = data.role || 'User';
         const username = data.username || 'User';
-        setAuth(data.token, role, username);
+        setAuth(data.token, role, username, data.avatarUrl || null);
         toast.success('Đăng nhập Mezon thành công!');
         navigate('/dashboard');
       } else if (data.type === 'error') {
@@ -183,7 +183,7 @@ export const LoginForm: React.FC = () => {
         toast.success('Đăng nhập thành công!');
         const token = response.DT.access_token;
         const role = response.DT.groupWithRoles.name || 'User';
-          setAuth(token, role, response.DT.username);
+          setAuth(token, role, response.DT.username, response.DT.avatarUrl || null);
         navigate('/dashboard');
       } else {
         toast.error(response.EM || 'Đăng nhập thất bại!');

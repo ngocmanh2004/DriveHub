@@ -20,6 +20,14 @@ const buildCookieOptions = () => ({
 const pickMezonUser = (userinfo = {}) => {
     const mezonId = userinfo.id || userinfo.sub || userinfo.user_id || null;
     const email = userinfo.email || userinfo.mail || (mezonId ? `${mezonId}@mezon.local` : null);
+    const avatarUrl =
+        userinfo.avatar_url ||
+        userinfo.avatar ||
+        userinfo.picture ||
+        userinfo.profile_image ||
+        userinfo?.user?.avatar_url ||
+        userinfo?.user?.avatar ||
+        null;
     const username =
         userinfo.username ||
         userinfo.name ||
@@ -29,6 +37,7 @@ const pickMezonUser = (userinfo = {}) => {
     return {
         mezonId,
         email,
+        avatarUrl,
         username,
         raw: userinfo,
     };
@@ -151,6 +160,7 @@ const exchangeCode = async (req, res) => {
         const payload = {
             email: user.email,
             username: user.username,
+            avatarUrl: mezonUser.avatarUrl,
             groupWithRoles,
         };
 
@@ -173,6 +183,7 @@ const exchangeCode = async (req, res) => {
                 groupWithRoles,
                 email: user.email,
                 username: user.username,
+                avatarUrl: mezonUser.avatarUrl,
                 isNewUser,
                 mezonUser: mezonUser.raw,
             },

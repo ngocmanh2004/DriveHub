@@ -28,6 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const [role, setRole] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsAuthenticated(false);
           setRole(null);
           setDisplayName(null);
+          setAvatarUrl(null);
           setToken(null);
           setIsAuthLoading(false);
           return;
@@ -55,6 +57,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setIsAuthenticated(true);
           setRole(payload?.DT?.groupWithRoles?.name || 'User');
           setDisplayName(payload?.DT?.username || null);
+          setAvatarUrl(payload?.DT?.avatarUrl || null);
           setToken(payload?.DT?.access_token || null);
           setIsAuthLoading(false);
           return;
@@ -63,12 +66,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsAuthenticated(false);
         setRole(null);
         setDisplayName(null);
+        setAvatarUrl(null);
         setToken(null);
         setIsAuthLoading(false);
       } catch (e) {
         setIsAuthenticated(false);
         setRole(null);
         setDisplayName(null);
+        setAvatarUrl(null);
         setToken(null);
         setIsAuthLoading(false);
       }
@@ -77,13 +82,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     hydrateAuth();
   }, []);
 
-  const setAuth = (token: string, role: string, nextDisplayName?: string): void => {
+  const setAuth = (token: string, role: string, nextDisplayName?: string, nextAvatarUrl?: string | null): void => {
     clearLegacyAuthStorage();
     setIsAuthLoading(false);
     setIsAuthenticated(true);
     setToken(token);
     setRole(role);
     setDisplayName(nextDisplayName || null);
+    setAvatarUrl(nextAvatarUrl || null);
   };
 
   const logout = (): void => {
@@ -99,12 +105,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken(null);
     setRole(null);
     setDisplayName(null);
+    setAvatarUrl(null);
   };
 
   const getToken = (): string | null => token;
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isAuthLoading, role, displayName, setAuth, logout, getToken }}>
+    <AuthContext.Provider value={{ isAuthenticated, isAuthLoading, role, displayName, avatarUrl, setAuth, logout, getToken }}>
       {children}
     </AuthContext.Provider>
   );

@@ -43,7 +43,7 @@ export const MezonCallback: React.FC = () => {
     hasHandledCallbackRef.current = true;
 
     const processCallback = async () => {
-      const notifyOpener = (payload: { type: 'success' | 'error'; token?: string; role?: string; username?: string; message?: string }) => {
+      const notifyOpener = (payload: { type: 'success' | 'error'; token?: string; role?: string; username?: string; avatarUrl?: string | null; message?: string }) => {
         if (isPopupFlow && window.opener && !window.opener.closed) {
           window.opener.postMessage(
             {
@@ -125,15 +125,16 @@ export const MezonCallback: React.FC = () => {
 
         const role = parsed?.DT?.groupWithRoles?.name || 'User';
         const username = parsed?.DT?.username || parsed?.DT?.mezonUser?.username || 'User';
+        const avatarUrl = parsed?.DT?.avatarUrl || null;
         sessionStorage.removeItem('mezon_oauth_state');
 
         if (isPopupFlow) {
-          notifyOpener({ type: 'success', token: parsed.DT.access_token, role, username });
+          notifyOpener({ type: 'success', token: parsed.DT.access_token, role, username, avatarUrl });
           window.close();
           return;
         }
 
-        setAuth(parsed.DT.access_token, role, username);
+        setAuth(parsed.DT.access_token, role, username, avatarUrl);
 
         toast.success('Dang nhap Mezon thanh cong!');
         setStatus('Dang nhap thanh cong, dang chuyen huong...');
