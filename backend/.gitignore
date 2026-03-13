@@ -8,5 +8,6 @@ node-app/src/upload/originQR/*
 node-app/.env
 node-app/.env.*
 node-app/.env.build
+!node-app/.env.example
 *.env
 .env
