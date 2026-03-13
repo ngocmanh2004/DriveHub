@@ -933,4 +933,32 @@ button:hover {
             gap: 5px;
         }
     }
+    
+}
+.dpad-btn, .numpad-btn {
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+}
+
+.dpad-btn.down .keycap-img {
+    transform: scale(1);
+}
+
+.dpad-btn.down:active .keycap-img {
+    transform: translateY(3px) scale(1.05);
 }

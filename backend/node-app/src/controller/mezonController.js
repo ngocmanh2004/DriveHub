@@ -46,11 +46,12 @@ const buildCookieOptions = () => ({
 });
 
 const pickMezonUser = (userinfo = {}) => {
-    const mezonId = userinfo.id || userinfo.sub || userinfo.user_id || null;
-    const email = userinfo.email || userinfo.mail || (mezonId ? `${mezonId}@mezon.local` : null);
-    const avatarUrl = userinfo.avatar_url || null;
+    const mezonId = userinfo.user_id || null;
+    const email = userinfo.email || null;
+    const avatarUrl = userinfo.avatar || null;
     const username =
         userinfo.username ||
+        userinfo.display_name ||
         userinfo.name ||
         userinfo.global_name ||
         (email ? email.split('@')[0] : null);
