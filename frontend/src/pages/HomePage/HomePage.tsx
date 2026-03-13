@@ -13,6 +13,7 @@ import VideoSection from './VideoSection';
 import FooterDesc from './FooterDesc';
 
 const MOBILE_USER_AGENT_REGEX = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+const OAUTH_STATE_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 const isMobile = (): boolean => MOBILE_USER_AGENT_REGEX.test(navigator.userAgent || '');
 
@@ -29,11 +30,10 @@ const buildMezonAuthorizeUrl = (): string | null => {
     return null;
   }
 
-  const stateChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const randomStateBytes = new Uint8Array(11);
   window.crypto.getRandomValues(randomStateBytes);
   const state = Array.from(randomStateBytes)
-    .map((byte) => stateChars[byte % stateChars.length])
+    .map((byte) => OAUTH_STATE_ALPHABET[byte % OAUTH_STATE_ALPHABET.length])
     .join('');
 
   sessionStorage.setItem('mezon_oauth_state', state);

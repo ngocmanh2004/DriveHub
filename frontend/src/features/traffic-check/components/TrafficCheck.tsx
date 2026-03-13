@@ -204,14 +204,6 @@ const TrafficCheck: React.FC = () => {
         </div>
       </div>
 
-      <div className="tc-navbar">
-        <div className="tc-navbar-content">
-          <a href="/"><i className="material-icons">home</i></a>
-          <div className="tc-navbar-spacer"></div>
-          <i className="material-icons">search</i>
-        </div>
-      </div>
-
       <div className="tc-container">
         <div className="tc-form-card">
           <div className="tc-title">Tra cứu phạt nguội</div>
