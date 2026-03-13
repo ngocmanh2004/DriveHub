@@ -312,8 +312,7 @@
   background: #e0eff8;
 }
 
-/* ===================== RESPONSIVE: mobile ===================== */
-@media (max-width: 640px) {
+@media (max-width: 640px) and (orientation: portrait) {
   .app-teststudent {
     margin: 0 auto;
     max-width: 100vw;
@@ -365,63 +364,36 @@
   }
 }
 
-/* ===================== RESPONSIVE: landscape small ===================== */
 @media (max-height: 500px) and (orientation: landscape) {
   .app-teststudent {
-    max-width: 720px;
-    margin: 0 auto;
-    border-radius: 0;
-    border: none;
+    max-width: 760px;
+    margin: 8px auto;
   }
 
   .st-main-content {
-    padding: 8px 18px;
-    gap: 0;
+    padding: 14px 18px 12px;
   }
 
-  .st-search-form {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px 20px;
-    margin-bottom: 8px;
+  .reset-button {
+    top: 8px;
+    right: 8px;
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+    max-width: max-content;
   }
-
-  .st-form-row { width: auto; gap: 8px; }
-  .st-form-row > label { width: auto; font-size: 13px; }
-
-  .st-donvi-select { width: 260px; font-size: 13px; }
-  .st-khoa-select  { width: 160px; font-size: 13px; }
-  .st-sbd-input    { width: 56px !important; font-size: 13px !important; }
-
-  .st-btn-check-info { padding: 3px 8px; }
-  .st-btn-check-text { font-size: 11px; }
-  .st-btn-check-icon { width: 18px; height: 18px; }
-
-  .st-candidate-panel {
-    flex-direction: row;
-    gap: 22px;
-    margin-bottom: 8px;
-  }
-
-  .st-avatar-box { width: 72px; }
-  .st-avatar-img,
-  .st-avatar-placeholder { width: 66px; height: 86px; }
-
-  .st-info-details {
-    gap: 3px;
-    justify-content: flex-start;
-  }
-
-  .st-info-row { font-size: 12px; }
-
-  .st-footer-buttons { gap: 40px; margin-top: 4px; }
-  .st-btn-login, .st-btn-cancel { padding: 5px 14px; font-size: 13px; min-width: 100px; }
 }
 
 .reset-button {
   position: fixed;
   top: 80px;
   right: 15px;
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
   padding: 8px 16px;
   background-color: #ff4444;
   color: white;
@@ -442,7 +414,7 @@
   transform: translateY(1px);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 640px) and (orientation: portrait) {
   .reset-button {
     top: 5px;
     right: 5px;
