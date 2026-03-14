@@ -153,9 +153,9 @@ jobs:
                   - CORS_ORIGINS=${CORS_ORIGINS}
                   - DB_HOST=mysql_db
                   - DB_PORT=3306
-                  - DB_NAME=${DB_NAME}
-                  - DB_USER=${DB_USER}
-                  - DB_PASS=${DB_PASS}
+                  - DB_DATABASE=${DB_NAME}
+                  - DB_USERNAME=${DB_USER}
+                  - DB_PASSWORD=${DB_PASS}
                 depends_on:
                   mysql_db:
                     condition: service_healthy
