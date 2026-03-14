@@ -6,10 +6,19 @@ import cookieParser from 'cookie-parser';
 import setupStudentStatusWebSocket from './websocket/wsStudentStatusServer'; // WS server for student status
 import http from 'http';
 import botTelegram from './bot/botTelegram';
-import https from 'https';
-import fs from 'fs';
 const app = express();
 configCors(app);
+
+// ── Request logger ──────────────────────────────────────────
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const ms = Date.now() - start;
+        const level = res.statusCode >= 500 ? 'ERROR' : res.statusCode >= 400 ? 'WARN' : 'INFO';
+        console.log(`[${level}] ${new Date().toISOString()} ${req.method} ${req.originalUrl} ${res.statusCode} ${ms}ms`);
+    });
+    next();
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,14 +41,18 @@ initWebRoutes(app);
 
 
 app.use((req, res) => {
+    console.log(`[WARN] 404 Not Found: ${req.method} ${req.originalUrl}`);
     return res.status(404).send("404 Not Found");
+});
+
+// ── Global error handler ─────────────────────────────────────
+app.use((err, req, res, next) => {
+    console.error(`[ERROR] ${new Date().toISOString()} ${req.method} ${req.originalUrl}`, err.message);
+    res.status(500).json({ EC: -1, EM: 'Internal Server Error' });
 });
 
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, '0.0.0.0', () => {
-    const address = server.address();
-    const host = address.address === '::' ? 'http://192.168.1.254' : address.address;
-    console.log('Server host:', host);
-
-    console.log('Server details:', address);
+    console.log(`[INFO] Server started on port ${PORT} | NODE_ENV=${process.env.NODE_ENV}`);
+    console.log(`[INFO] DB_HOST=${process.env.DB_HOST} DB_DATABASE=${process.env.DB_DATABASE}`);
 });
