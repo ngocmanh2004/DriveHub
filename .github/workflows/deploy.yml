@@ -115,12 +115,8 @@ jobs:
             mkdir -p /opt/drivehub
             cd /opt/drivehub
 
-            # Force remove tất cả containers (không dùng pkill)
+            # Force remove tất cả containers
             docker ps -aq | xargs -r docker rm -f 2>/dev/null || true
-
-            # Kill process còn giữ port 80
-            fuser -k 80/tcp 2>/dev/null || true
-            sleep 2
 
             # Write docker-compose.prod.yml
             cat > docker-compose.prod.yml << 'COMPOSEEOF'
@@ -206,7 +202,11 @@ jobs:
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
             ENVEOF
 
-            # Pull image mới và start (--pull always để đảm bảo image mới nhất)
+            # Kill port 80 ngay trước khi start (tránh systemd restart kịp)
+            fuser -k 80/tcp 2>/dev/null || true
+            sleep 1
+
+            # Pull image mới và start
             docker compose -f docker-compose.prod.yml up -d --pull always
 
             # Clean up old images
