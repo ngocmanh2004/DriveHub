@@ -1,91 +1,69 @@
 import React from 'react';
-import 'owl.carousel/dist/assets/owl.carousel.css';
-import 'owl.carousel/dist/assets/owl.theme.default.css';
-import OwlCarousel from 'react-owl-carousel';
+import './mainpages.scss';
+
+const features = [
+  {
+    icon: 'school', color: 'blue',
+    title: 'Đào tạo 5,000+ học viên',
+    desc: 'Tỷ lệ đỗ kỳ thi lái xe vượt trội đạt trên 95%, chứng minh chất lượng đào tạo hàng đầu tại Bình Định.',
+  },
+  {
+    icon: 'directions_car', color: 'cyan',
+    title: 'Xe tập lái hiện đại',
+    desc: 'Hơn 300 xe tập lái được trang bị đầy đủ các tính năng an toàn, tiện nghi và luôn được bảo dưỡng định kỳ.',
+  },
+  {
+    icon: 'people', color: 'green',
+    title: 'Giảng viên tận tâm',
+    desc: 'Đội ngũ 50+ giảng viên giàu kinh nghiệm, đã qua đào tạo chuyên nghiệp và luôn đồng hành cùng học viên.',
+  },
+  {
+    icon: 'build', color: 'amber',
+    title: 'Hỗ trợ kỹ thuật 24/7',
+    desc: 'Đội ngũ kỹ thuật viên chuyên nghiệp đảm bảo phương tiện và cơ sở vật chất hoạt động tốt nhất mọi lúc.',
+  },
+  {
+    icon: 'quiz', color: 'navy',
+    title: 'Thi thử trực tuyến',
+    desc: 'Luyện thi lý thuyết 600 câu, mô phỏng đúng đề thi sát hạch thực tế hoàn toàn miễn phí trên nền tảng Mezon.',
+  },
+  {
+    icon: 'search', color: 'purple',
+    title: 'Tra cứu GPLX & Vi phạm',
+    desc: 'Kiểm tra tình trạng giấy phép lái xe và vi phạm giao thông nhanh chóng, chính xác chỉ trong vài giây.',
+  },
+];
 
 const Services: React.FC = () => {
-  const services = [
-    {
-      "title": "Số lượng học viên đào tạo vượt trội",
-      "imgSrc": "/assets/images/service-icon-01.png",
-      "description": "Trung tâm đã đào tạo hàng ngàn học viên với tỷ lệ đỗ cao, chứng minh chất lượng và uy tín vượt bậc trong ngành đào tạo lái xe.",
-    },
-    {
-      "title": "Hệ thống xe giảng dạy hiện đại",
-      "imgSrc": "/assets/images/service-icon-02.png",
-      "description": "Hơn 50 xe tập lái được trang bị đầy đủ các tính năng hiện đại, đảm bảo sự an toàn và tiện nghi tối đa cho học viên.",
-    },
-    {
-      "title": "Đội ngũ giáo viên chất lượng cao",
-      "imgSrc": "/assets/images/service-icon-03.png",
-      "description": "Đội ngũ giảng viên giàu kinh nghiệm và tận tâm, luôn đồng hành cùng học viên trên hành trình chinh phục bằng lái xe.",
-    },
-    {
-      "title": "Đội ngũ kỹ thuật hỗ trợ tuyệt vời",
-      "imgSrc": "/assets/images/service-icon-04.png",
-      "description": "Đội ngũ kỹ thuật viên chuyên nghiệp luôn đảm bảo các phương tiện và cơ sở vật chất hoạt động tốt nhất.",
-    },
-    {
-      "title": "Chất lượng đào tạo vượt mong đợi",
-      "imgSrc": "/assets/images/service-icon-01.png",
-      "description": "Cam kết mang lại chất lượng đào tạo lái xe hàng đầu, đáp ứng mọi nhu cầu học tập của học viên.",
-    },
-    {
-      "title": "Sẵn sàng hỗ trợ mọi lúc, mọi nơi",
-      "imgSrc": "/assets/images/service-icon-02.png",
-      "description": "Hỗ trợ học viên 24/7 với tinh thần trách nhiệm cao, mang lại trải nghiệm học tập tốt nhất.",
-    }
-  ]
-
-  const carouselOptions = {
-    loop: true,
-    margin: 5,
-    nav: false,
-    dots: true,
-    autoplay: true,
-    responsive: {
-      0: { items: 1 },
-      600: { items: 2 },
-      1000: { items: 3 },
-    },
-  };
-
   return (
-    <div id="services" className="our-services section">
-      <div className="services-right-dec">
-        <img src="/assets/images/services-right-dec.png" alt="Decoration" />
-      </div>
-      <div className="container">
-        <div className="services-left-dec">
-          <img src="/assets/images/services-left-dec.png" alt="Decoration" />
+    <section id="services" className="hp-features hp-section">
+      <div className="hp-container">
+        <div className="hp-features-header hp-reveal">
+          <div className="hp-section-label">
+            <i className="material-icons">star</i>
+            Dịch vụ của chúng tôi
+          </div>
+          <h2 className="hp-section-title">
+            Giải pháp đào tạo lái xe <em>toàn diện</em>
+          </h2>
+          <p className="hp-section-sub">
+            Từ lý thuyết đến thực hành, chúng tôi cung cấp đầy đủ công cụ và hỗ trợ để bạn đạt được bằng lái xe mơ ước.
+          </p>
         </div>
-        <div className="row">
-          <div className="col-lg-6 offset-lg-3">
-            <div className="section-heading">
-              <h2>
-                Chúng tôi <em>cung cấp</em> dịch vụ đào tạo lái xe <span>tốt nhất</span>
-              </h2>
-              <span>0987980417</span>
+
+        <div className="hp-features-grid">
+          {features.map((f, i) => (
+            <div className={`hp-feature-card hp-reveal delay-${(i % 3) + 1}`} key={i}>
+              <div className={`hp-feature-icon hp-feature-icon--${f.color}`}>
+                <i className="material-icons">{f.icon}</i>
+              </div>
+              <div className="hp-feature-title">{f.title}</div>
+              <p className="hp-feature-desc">{f.desc}</p>
             </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-12">
-            <OwlCarousel className="owl-carousel owl-services" {...carouselOptions}>
-              {services.map((service, index) => (
-                <div className="item" key={index}>
-                  <h4>{service.title}</h4>
-                  <div className="icon">
-                    <img src={service.imgSrc} alt={service.title} />
-                  </div>
-                  <p>{service.description}</p>
-                </div>
-              ))}
-            </OwlCarousel>
-          </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
