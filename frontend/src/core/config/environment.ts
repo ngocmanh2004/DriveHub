@@ -12,8 +12,7 @@ export type BuildEnvironment =
   | 'development' 
   | 'production' 
   | 'buildlocal' 
-  | 'adminbuildlocal' 
-  | 'buildlocal_teacher';
+  ;
 
 export const ENVIRONMENT_CONFIGS: Record<BuildEnvironment, EnvironmentConfig> = {
   development: {
@@ -27,14 +26,6 @@ export const ENVIRONMENT_CONFIGS: Record<BuildEnvironment, EnvironmentConfig> = 
   buildlocal: {
     API_BASE_URL: 'http://192.168.1.99:8080',
     WS_BASE_URL: 'ws://192.168.1.99:8080/ws/student-status',
-  },
-  adminbuildlocal: {
-    API_BASE_URL: 'http://192.168.1.99:8080',
-    WS_BASE_URL: 'ws://192.168.1.99:8080/ws/student-status',
-  },
-  buildlocal_teacher: {
-    API_BASE_URL: 'https://localhost:8080',
-    WS_BASE_URL: 'wss://localhost:8080/ws/student-status',
   },
 };
 
