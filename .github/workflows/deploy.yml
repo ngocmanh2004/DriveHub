@@ -211,6 +211,11 @@ jobs:
             # Stop containers cũ để giải phóng ports
             docker compose -f docker-compose.prod.yml down 2>/dev/null || true
 
+            # Giải phóng ports
+            fuser -k 3001/tcp 2>/dev/null || true
+            fuser -k 8080/tcp 2>/dev/null || true
+            sleep 2
+
             # Start services
             docker compose -f docker-compose.prod.yml up -d
 
