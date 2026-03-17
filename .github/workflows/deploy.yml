@@ -206,5 +206,11 @@ jobs:
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
 
+            # Chờ backend sẵn sàng rồi chạy migration
+            echo "Waiting for backend to be ready..."
+            sleep 15
+            docker compose -f docker-compose.prod.yml exec -T backend npx sequelize-cli db:migrate --env docker_test
+            echo "Migration done."
+
             # Clean up old images
             docker image prune -f
