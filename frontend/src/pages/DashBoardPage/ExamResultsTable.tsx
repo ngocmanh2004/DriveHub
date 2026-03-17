@@ -1030,18 +1030,17 @@ const ExamResultsTable: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <Button
-                            variant="danger"
-                            size="sm"
+                        <button
+                            className="btn-delete-course"
                             onClick={handleDeleteKhoaHoc}
                             disabled={!selectedKhoaHoc}
                             title="Xoá khoá học này (bao gồm toàn bộ thí sinh và bài thi)"
                         >
                             Xoá khoá học
-                        </Button>
+                        </button>
                         <input
                             type="text"
-                            placeholder="Tìm kiếm theo số báo danh"
+                            placeholder="🔍 Tìm theo số báo danh..."
                             className="form-control"
                             value={searchQuery}
                             onChange={(e) => handleSearch(e.target.value)}
@@ -1053,23 +1052,24 @@ const ExamResultsTable: React.FC = () => {
 
 
             </div>
-            <Table hover striped bordered>
-                <thead className="table-dark">
+            <div className="exam-table-wrapper">
+            <table className="exam-table">
+                <thead>
                     <tr>
-                        <th style={{ cursor: "pointer" }} onClick={() => handleSort("khoahoc_thisinh.SoBaoDanh")}>
-                            SBD {sortConfig?.key === "khoahoc_thisinh.SoBaoDanh" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                        <th className={`sortable${sortConfig?.key === "khoahoc_thisinh.SoBaoDanh" ? ` sort-${sortConfig.direction}` : ""}`} onClick={() => handleSort("khoahoc_thisinh.SoBaoDanh")}>
+                            SBD <span className="sort-icon">{sortConfig?.key === "khoahoc_thisinh.SoBaoDanh" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}</span>
                         </th>
-                        <th style={{ cursor: "pointer" }} onClick={() => handleSort("HoTen")}>
-                            Họ Tên {sortConfig?.key === "HoTen" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                        <th className={`sortable${sortConfig?.key === "HoTen" ? ` sort-${sortConfig.direction}` : ""}`} onClick={() => handleSort("HoTen")}>
+                            Họ Tên <span className="sort-icon">{sortConfig?.key === "HoTen" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}</span>
                         </th>
-                        <th style={{ cursor: "pointer" }} onClick={() => handleSort("SoCMT")}>
-                            CCCD {sortConfig?.key === "SoCMT" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                        <th className={`sortable${sortConfig?.key === "SoCMT" ? ` sort-${sortConfig.direction}` : ""}`} onClick={() => handleSort("SoCMT")}>
+                            CCCD <span className="sort-icon">{sortConfig?.key === "SoCMT" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}</span>
                         </th>
-                        <th style={{ cursor: "pointer" }} onClick={() => handleSort("loaibangthi")}>
-                            Hạng Thi {sortConfig?.key === "loaibangthi" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                        <th className={`sortable${sortConfig?.key === "loaibangthi" ? ` sort-${sortConfig.direction}` : ""}`} onClick={() => handleSort("loaibangthi")}>
+                            Hạng Thi <span className="sort-icon">{sortConfig?.key === "loaibangthi" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}</span>
                         </th>
-                        <th style={{ cursor: "pointer" }} onClick={handleSortByStatus}>
-                            Tình Trạng {sortConfig?.key === "status" ? (sortConfig.direction === "asc" ? "↑" : "↓") : ""}
+                        <th className={`sortable${sortConfig?.key === "status" ? ` sort-${sortConfig.direction}` : ""}`} onClick={handleSortByStatus}>
+                            Tình Trạng <span className="sort-icon">{sortConfig?.key === "status" ? (sortConfig.direction === "asc" ? "▲" : "▼") : "⇅"}</span>
                         </th>
                     </tr>
                 </thead>
@@ -1154,7 +1154,8 @@ const ExamResultsTable: React.FC = () => {
                         );
                     })}
                 </tbody>
-            </Table>
+            </table>
+            </div>
 
 
 
