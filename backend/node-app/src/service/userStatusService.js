@@ -739,15 +739,15 @@ const handleImportPaymentFile = async (file, IDKhoaHoc) => {
 const fetchDataStudentWithToken = async (mhv, token) => {
     try {
         // Bước 2: Sử dụng token để gọi API thứ hai
-        const apiResponse = await fetch(`http://${process.env.IPNLTB}:7782/api/HocVienTH?soCmt=${mhv}&page=1&limit=20`, {
+        const apiResponse = await fetch(`http://${process.env.NLTB_API_HOST}:7782/api/HocVienTH?soCmt=${mhv}&page=1&limit=20`, {
             method: "GET",
             headers: {
                 "Accept": "application/json, text/plain, */*",
                 "Accept-Encoding": "gzip, deflate",
                 "Accept-Language": "vi,en;q=0.9",
                 "Authorization": `Bearer ${token}`, // Thêm token vào header Authorization
-                "Origin": `http://${process.env.IPNLTB}:7185`,
-                "Referer": `http://${process.env.IPNLTB}:7185/`
+                "Origin": `http://${process.env.NLTB_API_HOST}:7185`,
+                "Referer": `http://${process.env.NLTB_API_HOST}:7185/`
             }
         });
 
@@ -765,14 +765,14 @@ const fetchDataStudentWithToken = async (mhv, token) => {
 
 const getTokenNLTB_LOCAL = async () => {
     // Bước 1: Gửi yêu cầu đăng nhập để lấy token
-    const loginResponse = await fetch(`http://${process.env.IPNLTB}:7782/api/Login`, {
+    const loginResponse = await fetch(`http://${process.env.NLTB_API_HOST}:7782/api/Login`, {
         method: "POST",
         headers: {
             "accept": "application/json, text/plain, */*",
             "accept-language": "vi,en;q=0.9",
             "content-type": "application/json",
             "no-auth": "True",
-            "Referer": `http://${process.env.IPNLTB}:7185/`,
+            "Referer": `http://${process.env.NLTB_API_HOST}:7185/`,
             "Referrer-Policy": "strict-origin-when-cross-origin"
         },
         body: JSON.stringify({
