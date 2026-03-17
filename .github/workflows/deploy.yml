@@ -206,10 +206,14 @@ jobs:
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
 
-            # Chờ backend sẵn sàng rồi chạy migration
-            echo "Waiting for backend to be ready..."
-            sleep 15
-            docker compose -f docker-compose.prod.yml exec -T backend npx sequelize-cli db:migrate --env docker_production
+            # Retry migration cho đến khi DB sẵn sàng (tối đa 60s)
+            echo "Running migration..."
+            for i in $(seq 1 12); do
+              docker compose -f docker-compose.prod.yml exec -T backend \
+                npx sequelize-cli db:migrate --env docker_production && break
+              echo "Migration attempt $i failed, retrying in 5s..."
+              sleep 5
+            done
             echo "Migration done."
 
             # Clean up old images
