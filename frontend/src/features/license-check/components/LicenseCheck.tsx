@@ -1,34 +1,32 @@
-﻿import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './LicenseCheck.scss';
 
 import { getConfig } from 'src/core/config/environment';
 import { useApi } from 'src/shared/hooks';
 
 import GplxCard from './GplxCard';
+import LicenseLookupForm from './LicenseLookupForm';
 import {
   CaptchaSessionResponse,
   GplxLookupResponse,
-  CaptchaState,
-  LicenseCheckFormState,
-  LookupState,
+  CaptchaUiState,
+  LicenseLookupFormValues,
+  LicenseLookupUiState,
 } from '../types';
 
 const LicenseCheck: React.FC = () => {
   const { post } = useApi();
   const apiBaseUrl = getConfig().API_BASE_URL;
 
-  const [form, setForm] = useState<LicenseCheckFormState>({
-    cccd: '',
-    captchaCode: '',
-  });
+  const [prefilledCaptchaCode, setPrefilledCaptchaCode] = useState('');
 
-  const [captcha, setCaptcha] = useState<CaptchaState>({
+  const [captchaState, setCaptchaState] = useState<CaptchaUiState>({
     sessionId: null,
     base64: null,
     loading: false,
   });
 
-  const [lookup, setLookup] = useState<LookupState>({
+  const [lookupState, setLookupState] = useState<LicenseLookupUiState>({
     loading: false,
     list: [],
     error: null,
@@ -36,41 +34,37 @@ const LicenseCheck: React.FC = () => {
   });
 
   const loadCaptcha = useCallback(async () => {
-    setCaptcha((prev) => ({ ...prev, loading: true, base64: null }));
-    setForm((prev) => ({ ...prev, captchaCode: '' }));
-    setLookup((prev) => ({ ...prev, error: null }));
+    setCaptchaState((prev) => ({ ...prev, loading: true, base64: null }));
+    setPrefilledCaptchaCode('');
+    setLookupState((prev) => ({ ...prev, error: null }));
 
     try {
       const response = await fetch(`${apiBaseUrl}/api/gplx/captcha-session`, { credentials: 'include' });
       const data: CaptchaSessionResponse = await response.json();
 
       if (data?.EC === 0 && data.DT) {
-        const dt = data.DT;
-        setCaptcha({
-          sessionId: dt.sessionId,
-          base64: dt.captchaBase64 || null,
+        const payload = data.DT;
+        setCaptchaState({
+          sessionId: payload.sessionId,
+          base64: payload.captchaBase64 || null,
           loading: false,
         });
-
-        if (dt.autoSolvedCode) {
-          setForm((prev) => ({ ...prev, captchaCode: dt.autoSolvedCode || '' }));
-        }
-
+        setPrefilledCaptchaCode(payload.autoSolvedCode || '');
         return;
       }
 
-      setLookup((prev) => ({
+      setLookupState((prev) => ({
         ...prev,
-        error: data?.EM || 'Không tải được captcha, vui lòng thử lại',
+        error: data?.EM || 'Không tải được captcha, vui lòng thử lại.',
       }));
-      setCaptcha((prev) => ({ ...prev, loading: false }));
+      setCaptchaState((prev) => ({ ...prev, loading: false }));
     } catch (error) {
       const message = error instanceof Error ? error.message : '';
-      setLookup((prev) => ({
+      setLookupState((prev) => ({
         ...prev,
         error: `Không kết nối được backend: ${message}`,
       }));
-      setCaptcha((prev) => ({ ...prev, loading: false }));
+      setCaptchaState((prev) => ({ ...prev, loading: false }));
     }
   }, [apiBaseUrl]);
 
@@ -78,29 +72,27 @@ const LicenseCheck: React.FC = () => {
     loadCaptcha();
   }, [loadCaptcha]);
 
-  const handleGplxSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLookupSubmit = async (values: LicenseLookupFormValues) => {
+    const identityNumber = values.identityNumber.trim();
+    const captchaCode = values.captchaCode.trim();
 
-    const cccd = form.cccd.trim();
-    const captchaCode = form.captchaCode.trim();
-
-    if (!cccd) {
-      setLookup((prev) => ({ ...prev, error: 'Vui lòng nhập số CMND/CCCD.' }));
+    if (!identityNumber) {
+      setLookupState((prev) => ({ ...prev, error: 'Vui lòng nhập số CMND/CCCD.' }));
       return;
     }
 
     if (!captchaCode) {
-      setLookup((prev) => ({ ...prev, error: 'Vui lòng nhập mã captcha.' }));
+      setLookupState((prev) => ({ ...prev, error: 'Vui lòng nhập mã captcha.' }));
       return;
     }
 
-    if (!captcha.sessionId) {
-      setLookup((prev) => ({ ...prev, error: 'Captcha hết hạn, vui lòng làm mới.' }));
+    if (!captchaState.sessionId) {
+      setLookupState((prev) => ({ ...prev, error: 'Captcha hết hạn, vui lòng làm mới.' }));
       loadCaptcha();
       return;
     }
 
-    setLookup((prev) => ({
+    setLookupState((prev) => ({
       ...prev,
       loading: true,
       error: null,
@@ -110,18 +102,18 @@ const LicenseCheck: React.FC = () => {
 
     try {
       const result = await post<GplxLookupResponse>('/api/gplx/lookup', {
-        cccd,
+        cccd: identityNumber,
         captchaCode,
-        sessionId: captcha.sessionId,
+        sessionId: captchaState.sessionId,
       });
 
       if (result?.EC === 0) {
-        setLookup((prev) => ({ ...prev, list: result.DT || [] }));
-        setCaptcha((prev) => ({ ...prev, sessionId: null, base64: null }));
-        setForm((prev) => ({ ...prev, captchaCode: '' }));
+        setLookupState((prev) => ({ ...prev, list: result.DT || [] }));
+        setCaptchaState((prev) => ({ ...prev, sessionId: null, base64: null }));
+        setPrefilledCaptchaCode('');
         loadCaptcha();
       } else {
-        setLookup((prev) => ({
+        setLookupState((prev) => ({
           ...prev,
           error: result?.EM || 'Không tìm thấy thông tin GPLX.',
         }));
@@ -131,9 +123,9 @@ const LicenseCheck: React.FC = () => {
         }
       }
     } catch {
-      setLookup((prev) => ({ ...prev, error: 'Lỗi kết nối. Vui lòng thử lại sau.' }));
+      setLookupState((prev) => ({ ...prev, error: 'Lỗi kết nối. Vui lòng thử lại sau.' }));
     } finally {
-      setLookup((prev) => ({ ...prev, loading: false }));
+      setLookupState((prev) => ({ ...prev, loading: false }));
     }
   };
 
@@ -158,78 +150,15 @@ const LicenseCheck: React.FC = () => {
               Tra cứu giấy phép lái xe
             </div>
 
-            <form onSubmit={handleGplxSearch}>
-              <div className="tc-field-group">
-                <label>Số CMND / CCCD / Hộ chiếu</label>
-                <div className="tc-input-wrapper">
-                  <div className="tc-input-prefix"><i className="material-icons">badge</i></div>
-                  <input
-                    type="text"
-                    className="tc-input-field"
-                    placeholder="Nhập số CCCD / CMND"
-                    value={form.cccd}
-                    onChange={(e) => setForm((prev) => ({ ...prev, cccd: e.target.value }))}
-                    maxLength={20}
-                  />
-                </div>
-              </div>
-
-              <div className="tc-field-group">
-                <label>Mã xác nhận (captcha)</label>
-                <div className="tc-captcha-inline">
-                  <div className="tc-captcha-img-wrap">
-                    {captcha.loading ? (
-                      <div className="tc-captcha-img tc-captcha-loading">
-                        <span className="tc-spinner tc-spinner-dark" />
-                      </div>
-                    ) : captcha.base64 ? (
-                      <img src={captcha.base64} alt="captcha" className="tc-captcha-img" />
-                    ) : (
-                      <div className="tc-captcha-img tc-captcha-empty" onClick={loadCaptcha}>Nhấn để tải</div>
-                    )}
-
-                    <button
-                      type="button"
-                      className="tc-captcha-refresh"
-                      onClick={loadCaptcha}
-                      disabled={captcha.loading}
-                      title="Làm mới captcha"
-                    >
-                      <i className="material-icons">refresh</i>
-                    </button>
-                  </div>
-
-                  <input
-                    type="text"
-                    className="tc-captcha-input"
-                    placeholder="Nhập mã trong ảnh"
-                    value={form.captchaCode}
-                    onChange={(e) => setForm((prev) => ({ ...prev, captchaCode: e.target.value }))}
-                    maxLength={8}
-                    autoComplete="off"
-                  />
-                </div>
-              </div>
-
-              {lookup.error && (
-                <div className="tc-error-msg">
-                  <i className="material-icons">error_outline</i>
-                  {lookup.error}
-                </div>
-              )}
-
-              <button type="submit" className="tc-submit-btn" disabled={lookup.loading || captcha.loading}>
-                {lookup.loading ? (
-                  <>
-                    <span className="tc-spinner" /> Đang tra cứu...
-                  </>
-                ) : (
-                  <>
-                    <i className="material-icons">search</i> Tra cứu
-                  </>
-                )}
-              </button>
-            </form>
+            <LicenseLookupForm
+              captchaImageBase64={captchaState.base64}
+              captchaLoading={captchaState.loading}
+              lookupLoading={lookupState.loading}
+              errorMessage={lookupState.error}
+              prefilledCaptchaCode={prefilledCaptchaCode}
+              onRefreshCaptcha={loadCaptcha}
+              onSubmitLookup={handleLookupSubmit}
+            />
           </div>
         </div>
 
@@ -238,26 +167,26 @@ const LicenseCheck: React.FC = () => {
           Dữ liệu được cập nhật từ hệ thống Cục CSGT - Bộ Công An
         </div>
 
-        {lookup.loading && (
+        {lookupState.loading && (
           <div className="tc-gplx-loading">
             <div className="tc-spinner-large" />
             <p>Đang tra cứu dữ liệu từ hệ thống Cục CSGT...</p>
           </div>
         )}
 
-        {lookup.searched && !lookup.loading && (
+        {lookupState.searched && !lookupState.loading && (
           <div className="tc-results">
-            {lookup.list.length > 0 ? (
+            {lookupState.list.length > 0 ? (
               <div className="gplx-list">
-                {lookup.list.map((record, index) => (
+                {lookupState.list.map((record, index) => (
                   <GplxCard key={record.id} record={record} index={index} />
                 ))}
               </div>
             ) : (
-              lookup.error && (
+              lookupState.error && (
                 <div className="tc-no-result">
                   <i className="material-icons">search_off</i>
-                  <p>{lookup.error}</p>
+                  <p>{lookupState.error}</p>
                 </div>
               )
             )}

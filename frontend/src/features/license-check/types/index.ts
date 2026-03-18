@@ -1,4 +1,4 @@
-﻿export interface GplxLiveData {
+export interface GplxLiveData {
   so_gplx?: string;
   ho_va_ten?: string;
   ngay_sinh?: string;
@@ -47,22 +47,20 @@ export interface GplxCardProps {
   index: number;
 }
 
-
-export interface LicenseCheckFormState {
-  cccd: string;
+export interface LicenseLookupFormValues {
+  identityNumber: string;
   captchaCode: string;
 }
 
-export interface CaptchaState {
+export interface CaptchaUiState {
   sessionId: string | null;
   base64: string | null;
   loading: boolean;
 }
 
-export interface LookupState {
+export interface LicenseLookupUiState {
   loading: boolean;
   list: GplxRecord[];
   error: string | null;
   searched: boolean;
 }
-
