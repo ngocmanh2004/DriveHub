@@ -36,6 +36,8 @@ $radius:   10px;
   display: flex;
   align-items: center;
   gap: 16px;
+  position: relative;
+  top: 12px;
 }
 
 .tc-banner-logo {
@@ -595,7 +597,7 @@ $radius:   10px;
 @media (max-width: 640px) {
   .tc-banner-logo   { height: 56px; }
   .tc-banner-line1  { font-size: 13px; }
-  .tc-banner-line2  { font-size: 20px; }
+  .tc-banner-line2  { font-size: 16px }
   .tc-form-body     { padding: 18px 16px 22px; }
   .tc-tab           { padding: 12px 14px; font-size: 13px; gap: 5px; }
 

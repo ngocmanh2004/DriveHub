@@ -120,6 +120,7 @@ const GplxCard: React.FC<{ record: GplxRecord; index: number }> = ({ record, ind
 const TrafficCheck: React.FC = () => {
   const { post } = useApi();
   const [activeTab, setActiveTab] = useState<'gplx' | 'traffic'>('gplx');
+  const bienSoInputRef = React.useRef<HTMLInputElement>(null);
 
   // traffic state
   const [loaiXe,         setLoaiXe]         = useState('1');
@@ -146,6 +147,14 @@ const TrafficCheck: React.FC = () => {
   // Load captcha khi mở trang lần đầu (tab GPLX là mặc định)
   useEffect(() => { loadCaptcha(); }, []);
 
+  useEffect(() => {
+    if (window.location.hash.includes('traffic-check')) {
+      setActiveTab('traffic');
+      setTimeout(() => {
+        bienSoInputRef.current?.focus();
+      }, 300);
+    }
+  }, []);
   // ── load captcha ──
   const loadCaptcha = async () => {
     setCaptchaLoading(true);
@@ -355,7 +364,7 @@ const TrafficCheck: React.FC = () => {
                     <div className="tc-input-wrapper">
                       <div className="tc-input-prefix"><i className="material-icons">pin</i></div>
                       <input type="text" className="tc-input-field" placeholder="Ví dụ: 89A-22222"
-                        value={bienSo} onChange={e => setBienSo(e.target.value.toUpperCase())} />
+                        value={bienSo} onChange={e => setBienSo(e.target.value.toUpperCase())} ref={bienSoInputRef} />
                     </div>
                   </div>
                   {trafficError && !resultHtml && <div className="tc-error-msg"><i className="material-icons">error_outline</i>{trafficError}</div>}
