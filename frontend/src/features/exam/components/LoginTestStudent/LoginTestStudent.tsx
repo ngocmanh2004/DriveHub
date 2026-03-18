@@ -13,7 +13,7 @@ type ThiSinh = Student;
 
 
 const LoginTestStudent: React.FC = () => {
-    const { get, post, put, del } = useApi();
+    const { get, del } = useApi();
     const navigate = useNavigate();
 
     const [donViList] = useState([
@@ -250,25 +250,6 @@ const LoginTestStudent: React.FC = () => {
         );
     };
 
-    const handleResetStudentData = async () => {
-        try {
-            const response = await post<ApiResponse>(`/api/students/resetall`, {});
-            if (response.EC == 0) {
-                setStudentNow(null);
-                setSubjectList([]);
-                setSelectedSubject(null);
-                setSbd(null);
-                setIsStartEnabled(false);
-                localStorage.removeItem("sbd");
-                toast.success(response.EM);
-            } else {
-                toast.error("Không thể reset dữ liệu học viên.");
-            }
-        } catch (error) {
-            toast.error("Đã xảy ra lỗi khi reset dữ liệu học viên.");
-        }
-    };
-
     const handleCancel = () => {
         setStudentNow(null);
         setSubjectList([]);
@@ -408,14 +389,6 @@ const LoginTestStudent: React.FC = () => {
                 </div>
             </div>
 
-            {process.env.REACT_APP_BUILD != "buildlocal" && (
-                <button
-                    className="reset-button"
-                    onClick={handleResetStudentData}
-                >
-                    Reset dữ liệu
-                </button>
-            )}
 
         </div>
     );
