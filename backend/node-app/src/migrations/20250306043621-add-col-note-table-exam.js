@@ -4,10 +4,13 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     try {
       
-      await queryInterface.addColumn('exam', 'note', {
-        type: Sequelize.STRING,
-        defaultValue : ""
-      });
+      const t1 = await queryInterface.describeTable('exam');
+      if (!t1.note) {
+        await queryInterface.addColumn('exam', 'note', {
+          type: Sequelize.STRING,
+          defaultValue: "",
+        });
+      }
 
     } catch (error) {
       throw error;

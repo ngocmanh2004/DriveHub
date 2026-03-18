@@ -3,7 +3,8 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     // 1. Thêm cột 'type' vào bảng 'CourseQR'
-    await queryInterface.addColumn('CourseQR', 'type', {
+    const courseQR = await queryInterface.describeTable('CourseQR').catch(() => ({}));
+    if (!courseQR.type) await queryInterface.addColumn('CourseQR', 'type', {
       type: Sequelize.ENUM(
         'CCCD',
         'GPLX',
@@ -29,7 +30,8 @@ module.exports = {
     );
 
     // 3. Xóa cột 'type' khỏi bảng 'QR'
-    await queryInterface.removeColumn('QR', 'type');
+    const qr = await queryInterface.describeTable('QR').catch(() => ({}));
+    if (qr.type) await queryInterface.removeColumn('QR', 'type');
 
     // Nếu bạn đang dùng Postgres, bạn cần xóa type ENUM cũ
     // Phần này vẫn giữ nguyên, nhưng sẽ không chạy nếu bạn đang dùng MySQL

@@ -4,10 +4,13 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     try {
       
-      await queryInterface.addColumn('thisinh', 'print', {
-        type: Sequelize.BOOLEAN,
-        defaultValue : false
-      });
+      const t1 = await queryInterface.describeTable('thisinh');
+      if (!t1.print) {
+        await queryInterface.addColumn('thisinh', 'print', {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false,
+        });
+      }
 
     } catch (error) {
       throw error;

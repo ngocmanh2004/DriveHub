@@ -4,9 +4,12 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     try {
       
-      await queryInterface.addColumn('exam', 'IDSubject', {
-        type: Sequelize.INTEGER
-      });
+      const t1 = await queryInterface.describeTable('exam');
+      if (!t1.IDSubject) {
+        await queryInterface.addColumn('exam', 'IDSubject', {
+          type: Sequelize.INTEGER,
+        });
+      }
 
     } catch (error) {
       throw error;

@@ -4,9 +4,12 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     try {
       
-      await queryInterface.addColumn('subject', 'threshold', {
-        type: Sequelize.INTEGER,
-      });
+      const t1 = await queryInterface.describeTable('subject');
+      if (!t1.threshold) {
+        await queryInterface.addColumn('subject', 'threshold', {
+          type: Sequelize.INTEGER,
+        });
+      }
 
       // await queryInterface.addColumn('thisinh', 'IDResult', {
       //   type: Sequelize.INTEGER,

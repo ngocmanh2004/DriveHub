@@ -6,10 +6,13 @@ module.exports = {
       console.log("Thêm cột 'loaibangthi' vào bảng 'thisinh'");
       
       // Thêm cột 'loaibangthi' kiểu STRING vào bảng 'thisinh'
-      await queryInterface.addColumn('khoahoc_thisinh', 'stt', {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      });
+      const t1 = await queryInterface.describeTable('khoahoc_thisinh');
+      if (!t1.stt) {
+        await queryInterface.addColumn('khoahoc_thisinh', 'stt', {
+          type: Sequelize.INTEGER,
+          allowNull: true,
+        });
+      }
 
       console.log("Thêm cột 'loaibangthi' thành công");
     } catch (error) {
