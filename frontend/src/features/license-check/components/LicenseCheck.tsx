@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+﻿import React, { useCallback, useEffect, useState } from 'react';
 import './LicenseCheck.scss';
 
 import { getConfig } from 'src/core/config/environment';
@@ -8,7 +8,8 @@ import GplxCard from './GplxCard';
 import LicenseLookupForm from './LicenseLookupForm';
 import {
   CaptchaSessionResponse,
-  GplxLookupResponse,
+  LicenseLookupResponse,
+  mapLicenseRecord,
   CaptchaUiState,
   LicenseLookupFormValues,
   LicenseLookupUiState,
@@ -101,14 +102,14 @@ const LicenseCheck: React.FC = () => {
     }));
 
     try {
-      const result = await post<GplxLookupResponse>('/api/gplx/lookup', {
+      const result = await post<LicenseLookupResponse>('/api/gplx/lookup', {
         cccd: identityNumber,
         captchaCode,
         sessionId: captchaState.sessionId,
       });
 
       if (result?.EC === 0) {
-        setLookupState((prev) => ({ ...prev, list: result.DT || [] }));
+        setLookupState((prev) => ({ ...prev, list: (result.DT || []).map(mapLicenseRecord) }));
         setCaptchaState((prev) => ({ ...prev, sessionId: null, base64: null }));
         setPrefilledCaptchaCode('');
         loadCaptcha();
