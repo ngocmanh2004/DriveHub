@@ -98,8 +98,8 @@ const createDefaultProfileIfNeeded = async ({ mezonId, email, username }) => {
 const exchangeCode = async (req, res) => {
     try {
         const { code, state } = req.body || {};
-        const redirect_uri = requireEnv('REDIRECT_URI'); // Luôn dùng URI cứng từ server
-
+        const redirect_uri = requireEnv('REACT_APP_MEZON_REDIRECT_URI'); // Luôn dùng URI cứng từ server
+        console.log('check redirect_uri', redirect_uri)
         if (!code || !state) {
             return res.status(400).json({
                 error: 'invalid_request',
