@@ -4,14 +4,14 @@
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(0, 0, 0, 0.85) !important;
+  background: rgba(0, 0, 0, 0.4) !important; // Softer overlay
   display: flex !important;
   flex-direction: row !important;
   justify-content: center !important;
   align-items: center !important;
   z-index: 999999999 !important;
   padding: 40px;
-  backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(4px) !important; // Less blur
   gap: 30px;
 }
 
@@ -228,7 +228,7 @@
     .result-summary-text-box {
        margin-bottom: 5px;
        p { margin: 3px 0; font-size: 11px; }
-       .result-status-pill { font-size: 12px; }
+       .result-status-pill { font-size: 12px; } 
     }
     .nav-btn { padding: 6px; font-size: 11px; }
   }

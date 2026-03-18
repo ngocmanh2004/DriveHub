@@ -384,7 +384,7 @@ const FinalExamForm: React.FC = () => {
         </div>
       </div>
       
-      <div className={`exam-container`}>
+      <div className={`exam-container ${showResult ? 'blurred' : ''}`}>
         <VirtualDPad 
           currentQuestion={currentQuestion} 
           itemsPerColumn={itemsPerColumn} 
