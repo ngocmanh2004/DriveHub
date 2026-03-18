@@ -61,24 +61,29 @@ const initWebRoutes = (app) => {
     routes.post('/gplx/lookup', gplxController.lookupGPLX);
     routes.post('/mezon/exchange', mezonController.exchangeCode);
 
+    // ── Public routes (không cần đăng nhập) — dùng cho thi ──────────────────
+    routes.get("/students", userStatusController.getInfoStudents);
+    routes.post("/students/update-processtest", userStatusController.updateProcesstest);
+    routes.delete("/students/:id/exams", userStatusController.resetStudentExams);
+    routes.get("/course", userStatusController.getCourse);
+    routes.get('/rank/getRank', rankController.getRank);
+    routes.get('/subject/:rankId/get-subjects', subjectController.getSubject);
+    routes.get('/subject/get-test/:IDSubject', subjectController.getTestFromSubject);
+    routes.get('/test/get-test/:IDTest', testStudentController.getTest);
+    routes.post('/exam/create-exam', examController.createExam);
+
     routes.all("*", checkUserJwt, checkUserPermission);
     // CRUD API routes for status
     routes.get("/status", userStatusController.getAllStatus);
-    routes.post("/status", userStatusController.createStatus); // Tạo mới trạng thái
-    routes.put("/status/:id", userStatusController.updateStatus); // Cập nhật trạng thái
-    routes.delete("/status/:id", userStatusController.deleteStatus); // Xóa trạng thái
-    // routes.get("/status/getLastInfoStudents", userStatusController.getLastInfoStudents);           // Lấy tất cả user statuses
+    routes.post("/status", userStatusController.createStatus);
+    routes.put("/status/:id", userStatusController.updateStatus);
+    routes.delete("/status/:id", userStatusController.deleteStatus);
 
-    routes.get("/students", userStatusController.getInfoStudents);           // Lấy tất cả user statuses
     routes.get("/students_SBD", userStatusController.getInfoStudentsSBD);
     routes.post("/students/status/bulk", userStatusController.bulkUpdateStudentStatus);
-    routes.post("/students/update-processtest", userStatusController.updateProcesstest);
     routes.post("/students/resetall", userStatusController.resetall);
-    routes.delete("/students/:id/exams", userStatusController.resetStudentExams);
     routes.post("/students/update-print-status", studentController.updatePrintStatus);
 
-
-    routes.get("/course", userStatusController.getCourse);
     routes.delete("/course/:id", userStatusController.deleteKhoaHoc);
 
     routes.post("/import-xml", memoryUpload.single('file'), userStatusController.handleImportXMLStudent); // Đính kèm middleware upload để xử lý file import học sinh
@@ -109,23 +114,14 @@ const initWebRoutes = (app) => {
     routes.post("/testStudent/processExcelAndInsert", memoryUpload.single('file'), testStudentController.processExcelAndInsert); //upload 600 question and test
 
     //rank
-    routes.get('/rank/getRank', rankController.getRank)
     routes.post('/rank/create-rank', rankController.createRank)
     routes.put('/rank/update-rank/:id', rankController.updateRank)
 
     //subject
-    routes.get('/subject/:rankId/get-subjects', subjectController.getSubject)
-    routes.get('/subject/get-test/:IDSubject', subjectController.getTestFromSubject)
-
     routes.post('/subject/create-subject', subjectController.createSubject)
     routes.put('/subject/update-subject/:IDsubject', subjectController.updateSubject)
 
-    //test
-    routes.get('/test/get-test/:IDTest', testStudentController.getTest)
-
-
     //exam
-    routes.post('/exam/create-exam', examController.createExam) //save exam
     routes.delete("/exam/:id", examController.deleteExam)
     routes.get("/exam/export-report", examController.exportReport);
 
