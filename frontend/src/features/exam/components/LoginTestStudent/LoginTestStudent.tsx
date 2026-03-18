@@ -132,7 +132,14 @@ const LoginTestStudent: React.FC = () => {
             }
 
             const student = response.DT[0] as ThiSinh;
-            setStudentNow(student);
+
+            // Reset toàn bộ bài thi của thí sinh này
+            await del(`/api/students/${student.IDThiSinh}/exams`);
+
+            // Reload lại thông tin thí sinh sau khi reset
+            const refreshed = await get<ApiResponse<Student[]>>(`/api/students?IDKhoaHoc=${selectedKhoaHoc}&SoBaoDanh=${sbd}`);
+            const updatedStudent = refreshed.DT[0] as ThiSinh;
+            setStudentNow(updatedStudent);
 
             const rank = ranks.find((r) => r.name === student.loaibangthi);
             if (rank) {
