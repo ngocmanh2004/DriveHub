@@ -115,6 +115,23 @@ const FinalExamForm: React.FC = () => {
   }, [itemsPerColumn, questionColumns.length]);
 
   const [showMobileList, setShowMobileList] = useState<boolean>(false);
+  const questionNavContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isMobileLandscape) return;
+
+    const navContainer = questionNavContainerRef.current;
+    if (!navContainer) return;
+
+    const currentQuestionElement = navContainer.querySelector('.question-btn.current') as HTMLElement | null;
+    if (!currentQuestionElement) return;
+
+    currentQuestionElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest',
+    });
+  }, [currentQuestion, isMobileLandscape]);
   // Khởi tạo bài thi ban đầu
   useEffect(() => {
     const initializeExam = async () => {
@@ -529,6 +546,7 @@ const FinalExamForm: React.FC = () => {
             </div>
             <div
               className="question-nav-container"
+              ref={questionNavContainerRef}
               style={{ ['--question-column-count' as any]: questionColumns.length || 1 }}
             >
               {questionColumns.map((column, columnIndex) => (
