@@ -41,6 +41,16 @@ const httpClient: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+// Request interceptor - attach JWT token from sessionStorage
+httpClient.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem('auth_token');
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Response interceptor - handle errors and show toast notifications
 httpClient.interceptors.response.use(
   (response) => response,

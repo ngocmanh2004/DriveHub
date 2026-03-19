@@ -117,27 +117,43 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     Anh: {
-      type: DataTypes.STRING,
+      type: DataTypes.BLOB('medium'),
       allowNull: true,
-      // Hàm trả về Base64 khi truy xuất dữ liệu
       get() {
         try {
-          const anhPath = this.getDataValue('Anh'); // Lấy đường dẫn ảnh từ DB hoặc dữ liệu
-          if (anhPath) {
-            // Tạo đường dẫn tuyệt đối cho ảnh
-            const imagePath = path?.join(__dirname, '../', anhPath);
+          const anhValue = this.getDataValue('Anh');
+          if (!anhValue) return "";
 
-            // Kiểm tra file tồn tại trước khi đọc
-            if (fs.existsSync(imagePath)) {
-              const imageBuffer = fs.readFileSync(imagePath); // Đọc nội dung file
-              return imageBuffer.toString('base64'); // Chuyển sang Base64
-            } else {
+          // BLOB column → Sequelize trả Buffer
+          if (Buffer.isBuffer(anhValue) && anhValue.length > 0) {
+            const firstByte = anhValue[0];
+            // Magic bytes: JPEG=0xFF, PNG=0x89, binary JP2=0x00
+            // Nếu là binary image → chuyển sang base64
+            if (firstByte === 0xFF || firstByte === 0x89 || firstByte === 0x00) {
+              return anhValue.toString('base64');
             }
+            // Không phải binary → là chuỗi base64 lưu dưới dạng UTF-8 bytes (data cũ)
+            return anhValue.toString('utf8');
           }
-          return ""; // Trả về chuỗi rỗng nếu không tìm thấy ảnh hoặc `anhPath` không hợp lệ
+
+          // String → có thể là file path hoặc base64 cũ
+          const anhStr = String(anhValue);
+          const looksLikePath = anhStr.length < 500 && (
+            anhStr.includes('/') || anhStr.includes('\\') ||
+            /\.(jpg|jpeg|png|gif|webp)$/i.test(anhStr)
+          );
+          if (looksLikePath) {
+            const imagePath = path.join(__dirname, '../', anhStr);
+            if (fs.existsSync(imagePath)) {
+              return fs.readFileSync(imagePath).toString('base64');
+            }
+            return "";
+          }
+
+          return anhStr;
         } catch (error) {
           console.error('Lỗi khi xử lý file ảnh:', error.message);
-          return ""; // Trả về chuỗi rỗng trong trường hợp xảy ra lỗi
+          return "";
         }
       }
     },

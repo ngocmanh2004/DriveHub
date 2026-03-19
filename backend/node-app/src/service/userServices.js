@@ -173,30 +173,32 @@ const getInfoStudentServices = async (IDKhoaHoc, SoBaoDanh = null, IDThiSinh = n
         if (IDKhoaHoc) {
             whereCondition['IDKhoaHoc'] = IDKhoaHoc;
         }
-        if (SoBaoDanh) {
-            whereCondition['$khoahoc_thisinh.SoBaoDanh$'] = SoBaoDanh;
-        }
         if (IDThiSinh) {
             whereCondition['IDThiSinh'] = IDThiSinh;
+        }
+
+        const khoahocThisinhInclude = {
+            model: db.khoahoc_thisinh,
+            include: [
+                {
+                    model: db.status,
+                    attributes: ['id', 'namestatus'],
+                },
+                {
+                    model: db.khoahoc,
+                    attributes: null,
+                },
+            ],
+        };
+        if (SoBaoDanh) {
+            khoahocThisinhInclude.where = { SoBaoDanh };
+            khoahocThisinhInclude.required = true;
         }
 
         const thiSinhInfo = await db.thisinh.findAll({
             where: whereCondition,
             include: [
-                {
-                    model: db.khoahoc_thisinh,
-                    // attributes: ['IDThiSinh', 'SoBaoDanh', 'IDstatus', 'stt'], // Lấy thông tin họ tên, ảnh, và loại bằng thi từ bảng thisinh
-                    include: [
-                        {
-                            model: db.status,
-                            attributes: ['id', 'namestatus'],
-                        },
-                        {
-                            model: db.khoahoc,
-                            attributes: null,
-                        },
-                    ]
-                },
+                khoahocThisinhInclude,
                 {
                     model: db.processtest
                 },

@@ -518,7 +518,7 @@ const FinalExamForm: React.FC = () => {
         </div>
         <div className="footer">
           <div className="left">
-            <img src={'data:image/jpg;base64,' + studentNow?.Anh} className='image-hv' alt="" />
+            <img src={'data:image/jpeg;base64,' + studentNow?.Anh} className='image-hv' alt="" />
           </div>
           <div className="middle">
             <div className="subject">

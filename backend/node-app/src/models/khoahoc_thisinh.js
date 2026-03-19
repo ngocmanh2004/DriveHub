@@ -49,12 +49,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     // Số báo danh của thí sinh
     SoBaoDanh: {
-      type: DataTypes.STRING(5),
+      type: DataTypes.INTEGER,
       allowNull: true,
-      get() {
-        const rawValue = this.getDataValue('SoBaoDanh');
-        return rawValue ? parseInt(rawValue, 10) : null;
-      },
     },
     // Trạng thái
     IDstatus: {

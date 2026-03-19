@@ -91,7 +91,7 @@ const PrintLayout = forwardRef<HTMLDivElement, PrintLayoutProps>(({ student, tes
                         <p><strong>Tại: Trung Tâm ĐT&SH Lái Xe</strong></p>
                     </div>
                     <div className="info-right photo">
-                        <img src={`data:image/jpg;base64,${student?.Anh}`} alt="Candidate" />
+                        <img src={`data:image/jpeg;base64,${student?.Anh}`} alt="Candidate" />
                         <p><strong>Hạng GPLX:</strong> {student?.loaibangthi || "N/A"}</p>
                         <p><strong>Số báo danh:</strong> {student?.khoahoc_thisinh?.SoBaoDanh || "N/A"}</p>
                     </div>

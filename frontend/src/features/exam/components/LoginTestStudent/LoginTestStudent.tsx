@@ -17,9 +17,9 @@ const LoginTestStudent: React.FC = () => {
     const navigate = useNavigate();
 
     const [donViList] = useState([
-        { id: 505, name: '505 - TRUNG TÂM SÁT HẠCH TRƯỜNG CAO ĐẲNG NGHỀ GIAO THÔNG VẬN TẢI' }
+        { id: 52001, name: '52001 - TRƯỜNG CAO ĐẲNG CƠ ĐIỆN XÂY DỰNG VÀ NÔNG LÂM TRUNG BỘ' }
     ]);
-    const [selectedDonVi, setSelectedDonVi] = useState(505);
+    const [selectedDonVi, setSelectedDonVi] = useState(52001);
 
     const [khoaHocList, setKhoaHocList] = useState<Course[]>([]);
     const [selectedKhoaHoc, setSelectedKhoaHoc] = useState<string | null>(null);
@@ -334,7 +334,7 @@ const LoginTestStudent: React.FC = () => {
                 <div className="st-candidate-panel">
                     <div className="st-avatar-box">
                         {studentNow?.Anh ? (
-                            <img src={'data:image/jpg;base64,' + studentNow?.Anh} className="st-avatar-img" alt="Avatar" />
+                            <img src={'data:image/jpeg;base64,' + studentNow?.Anh} className="st-avatar-img" alt="Avatar" />
                         ) : (
                             <div className="st-avatar-placeholder"></div>
                         )}
@@ -351,7 +351,7 @@ const LoginTestStudent: React.FC = () => {
                         </div>
                         <div className="st-info-row">
                             <span className="st-info-label">Ngày sinh:</span>
-                            <span className="st-info-value">{String(studentNow?.NgaySinh || "-")}</span>
+                            <span className="st-info-value">{studentNow?.NgaySinh ? new Date(studentNow.NgaySinh).toLocaleDateString('vi-VN') : "-"}</span>
                         </div>
                         <div className="st-info-row">
                             <span className="st-info-label">Số định danh:</span>

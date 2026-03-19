@@ -8,6 +8,44 @@ import XLSX from 'xlsx';
 import file from "../utils/file.js"
 const fs = require('fs');
 const path = require('path');
+const { JpxImage } = require('jpeg2000');
+const sharp = require('sharp');
+
+const convertImageToJpeg = async (base64Str) => {
+    try {
+        const inputBuffer = Buffer.from(base64Str, 'base64');
+
+        // Decode JP2/J2K using jpeg2000 library
+        const jpx = new JpxImage();
+        jpx.parse(inputBuffer);
+
+        if (!jpx.tiles || jpx.tiles.length === 0) {
+            throw new Error('No tiles decoded from JP2');
+        }
+
+        const width = jpx.width;
+        const height = jpx.height;
+        const components = jpx.componentsCount;
+        const tile = jpx.tiles[0];
+
+        // tile.items is interleaved RGB(A) pixels (Uint8ClampedArray)
+        const rawPixels = Buffer.from(tile.items);
+
+        // Encode raw pixels to JPEG using sharp
+        // JP2 photos are typically RGB (3) or grayscale (1)
+        const channels = Math.min(components, 4);
+        const tileWidth = tile.width || width;
+        const tileHeight = tile.height || height;
+        const jpegBuffer = await sharp(rawPixels, {
+            raw: { width: tileWidth, height: tileHeight, channels }
+        }).jpeg({ quality: 85 }).toBuffer();
+
+        return jpegBuffer;
+    } catch (e) {
+        console.warn('JP2 convert failed, storing raw bytes:', e.message);
+        return Buffer.from(base64Str, 'base64');
+    }
+};
 const getCourse = async () => {
     try {
         // Truy vấn thông tin từ bảng thisinh, khoahoc_thisinh, và status
@@ -151,8 +189,14 @@ const handleImportXMLStudent = async (file) => {
         const parsedData = await parseStringPromise(xmlData);
 
         // Lấy thông tin khóa học từ KY_SH
+        const header = parsedData.SAT_HACH?.HEADER?.[0];
         const kySh = parsedData.SAT_HACH.DATA[0].KY_SH[0];
-        const tenKhoaHoc = kySh.$.xmlns;
+        const tenKhoaHoc = kySh?.$?.xmlns
+            || kySh?.TEN_KY_SH?.[0]
+            || kySh?.TENKYSH?.[0]
+            || (header?.TEN_DV_GUI?.[0] ? `${header.TEN_DV_GUI[0]} - ${kySh?.MAKYSH?.[0]}` : null)
+            || kySh?.MAKYSH?.[0]
+            || 'Khóa học';
         const maKySH = kySh.MAKYSH[0];
         const ngaySH = kySh.NGAYSH[0];
 
@@ -208,15 +252,10 @@ const handleImportXMLStudent = async (file) => {
                 let ngaySinhStr = nguoi?.NGAY_SINH[0];
                 const soCMT = nguoi?.SO_CMT[0];
                 const hangGPLX = nguoi?.HO_SO[0]?.HANG_GPLX[0];
-                const sbd = nguoi?.HO_SO[0]?.SO_BAO_DANH[0] || 999;
-                const anh = nguoi?.HO_SO[0].ANH_CHAN_DUNG[0];
-
-                // Kiểm tra và thiết lập giá trị mặc định cho ngaySinh nếu không hợp lệ
-                if (isNaN(Date.parse(ngaySinh))) {
-                    ngaySinh = new Date(); // Sử dụng ngày hiện tại nếu ngaySinh không hợp lệ
-                } else {
-                    ngaySinh = new Date(ngaySinh);
-                }
+                const sbdRaw = nguoi?.HO_SO[0]?.SO_BAO_DANH[0];
+                const sbd = sbdRaw ? parseInt(sbdRaw, 10) : 999;
+                const anhRaw = nguoi?.HO_SO[0]?.ANH_CHAN_DUNG?.[0] || null;
+                const anh = anhRaw ? await convertImageToJpeg(anhRaw) : null;
 
                 let ngaySinh = new Date();
                 if (ngaySinhStr && ngaySinhStr.length === 8 && !isNaN(ngaySinhStr)) {
@@ -301,6 +340,12 @@ const handleImportXMLStudent = async (file) => {
                         IDThiSinh: thiSinhId,
                         SoBaoDanh: sbd,
                     });
+                } else if (existingKhoahocThisinhMap.get(thiSinhId) == null) {
+                    // Record tồn tại nhưng SoBaoDanh chưa được lưu → update
+                    await db.khoahoc_thisinh.update(
+                        { SoBaoDanh: sbd },
+                        { where: { IDKhoaHoc: maKySH, IDThiSinh: thiSinhId } }
+                    );
                 }
                 successfulImports++;
 
