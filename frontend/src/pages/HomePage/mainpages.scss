@@ -157,8 +157,10 @@ $ease:       0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hp-hero-title {
-  font-size:54px; font-weight:900; line-height:1.1; color:$text; margin-bottom:22px;
-  font-family: 'Poppins', 'Be Vietnam Pro', sans-serif;
+  font-size:44px; font-weight:800; line-height:1.5; color:$text; margin-bottom:22px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  word-break: keep-all; overflow-wrap: break-word;
+  letter-spacing: -0.01em;
   span {
     color: $primary;
     background:linear-gradient(135deg, $primary 30%, $cyan-lt);
@@ -170,7 +172,11 @@ $ease:       0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background: none;
     }
   }
-  @media(max-width:1200px){font-size:44px;} @media(max-width:768px){font-size:34px;} @media(max-width:480px){font-size:26px;}
+  @media(max-width:1200px){font-size:36px;}
+  @media(max-width:991px){font-size:30px; line-height:1.5;}
+  @media(max-width:768px){font-size:24px; line-height:1.55;}
+  @media(max-width:480px){font-size:20px; line-height:1.6;}
+  @media(max-width:360px){font-size:18px;}
 }
 
 .hp-hero-desc { font-size:17px; color:$muted; line-height:1.78; margin-bottom:36px; @media(max-width:768px){font-size:15px;} }
