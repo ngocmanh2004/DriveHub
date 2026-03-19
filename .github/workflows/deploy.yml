@@ -50,7 +50,7 @@ jobs:
             REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
             REACT_APP_MEZON_REDIRECT_URI=${{ secrets.REACT_APP_MEZON_REDIRECT_URI }}
             REACT_APP_MEZON_CLIENT_ID=${{ secrets.MEZON_CLIENT_ID }}
-            REACT_APP_MEZON_AUTHORIZE_URL=${{ secrets.MEZON_AUTHORIZE_URL }}
+            REACT_APP_MEZON_AUTHORIZE_URL=${{ secrets.REACT_APP_MEZON_AUTHORIZE_URL }}
             REACT_APP_MEZON_SCOPE=openid offline
             REACT_APP_BUILD=production
 
@@ -139,10 +139,10 @@ jobs:
                   - JWT_SECRET=${JWT_SECRET}
                   - MEZON_CLIENT_ID=${MEZON_CLIENT_ID}
                   - MEZON_CLIENT_SECRET=${MEZON_CLIENT_SECRET}
-                  - MEZON_AUTHORIZE_URL=${MEZON_AUTHORIZE_URL}
                   - MEZON_TOKEN_URL=${MEZON_TOKEN_URL}
                   - MEZON_USERINFO_URL=${MEZON_USERINFO_URL}
                   - REACT_APP_MEZON_REDIRECT_URI=${REACT_APP_MEZON_REDIRECT_URI}
+                  - REACT_APP_MEZON_AUTHORIZE_URL=${REACT_APP_MEZON_AUTHORIZE_URL}
                   - CORS_ORIGINS=${CORS_ORIGINS}
                   - DB_HOST=mysql_db
                   - DB_PORT=3306
@@ -191,7 +191,6 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             MEZON_CLIENT_ID=${{ secrets.MEZON_CLIENT_ID }}
             MEZON_CLIENT_SECRET=${{ secrets.MEZON_CLIENT_SECRET }}
-            MEZON_AUTHORIZE_URL=${{ secrets.MEZON_AUTHORIZE_URL }}
             MEZON_TOKEN_URL=${{ secrets.MEZON_TOKEN_URL }}
             MEZON_USERINFO_URL=${{ secrets.MEZON_USERINFO_URL }}
             REACT_APP_MEZON_REDIRECT_URI=${{ secrets.REACT_APP_MEZON_REDIRECT_URI }}

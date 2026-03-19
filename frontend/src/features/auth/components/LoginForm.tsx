@@ -111,6 +111,11 @@ export const LoginForm: React.FC = () => {
 
     const oauthUrl = `${authorizeUrl}?${params.toString()}`;
 
+    // DEBUG: hiển thị full URL để kiểm tra redirect_uri
+    const debugMsg = `=== DEBUG MEZON OAUTH ===\nredirect_uri: ${redirectUri}\nclient_id: ${mezonClientId}\nfull URL:\n${decodeURIComponent(oauthUrl)}`;
+    console.log(debugMsg);
+    alert(debugMsg);
+
     const isCompactViewport = window.innerWidth < 768;
     if (isCompactViewport) {
       window.location.href = oauthUrl;
