@@ -19,7 +19,9 @@ export const useApi = (): UseApiReturn => {
   const get = async <T>(url: string, options?: { params?: object }): Promise<T> => {
     setLoading(true);
     try {
-      const response = await httpClient.get<T>(url, { params: options?.params });
+      // Bust browser cache for dynamic endpoints to avoid empty 304 payloads in Axios.
+      const params = { ...(options?.params || {}), _t: Date.now() };
+      const response = await httpClient.get<T>(url, { params });
       return response.data;
     } finally {
       setLoading(false);

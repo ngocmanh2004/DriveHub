@@ -5,3 +5,4 @@
 
 // Export exam components when created
 export { default as FinalExamForm } from './FinalExamForm';
+export { default as ForceLandscapeWrapper } from './ForceLandscapeWrapper';

@@ -4,3 +4,4 @@
  */
 
 export { useExamTimer } from './useExamTimer';
+export { useForceLandscape } from './useForceLandscape';

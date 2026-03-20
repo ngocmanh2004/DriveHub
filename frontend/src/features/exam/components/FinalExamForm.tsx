@@ -78,6 +78,7 @@ const FinalExamForm: React.FC = () => {
   
   const [itemsPerColumn, setItemsPerColumn] = useState(10);
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
+  const [isFakeLandscape, setIsFakeLandscape] = useState(false);
 
   useEffect(() => {
     const updateExamLayout = () => {
@@ -85,8 +86,16 @@ const FinalExamForm: React.FC = () => {
       const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
       const isSmallScreen = window.innerWidth <= 1366 || window.innerHeight <= 950;
       const isMobile = isTouchDevice || isSmallScreen;
+      
+      // Detect nếu cần fake landscape (mobile portrait)
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isPortrait = height > width;
+      const needsFakeLandscape = isTouchDevice && width <= 768 && isPortrait;
+      
       setItemsPerColumn(isMobile ? 15 : 10);
-      setIsMobileLandscape(isMobile);
+      setIsMobileLandscape(isMobile || needsFakeLandscape);
+      setIsFakeLandscape(needsFakeLandscape);
     };
 
     updateExamLayout();
@@ -492,14 +501,7 @@ const FinalExamForm: React.FC = () => {
 
   return (
     <>
-      <div className="portrait-lock-screen">
-        <div className="lock-content">
-          <h2>Vui lòng xoay ngang thiết bị</h2>
-          <p>Bài thi yêu cầu thiết bị ở chế độ ngang (Landscape) để hiển thị đầy đủ thông tin.</p>
-        </div>
-      </div>
-
-      <div className="exam-rotate-wrapper">
+      <div className={`exam-rotate-wrapper ${isFakeLandscape ? 'fake-landscape' : ''}`}>
       <div className={`exam-container`} style={desktopExamLayoutStyle}>
         <div className="virtual-controls">
           <div className="virtual-controls__dpad">
