@@ -2,71 +2,76 @@ import { WebSocketServer, WebSocket } from 'ws';
 import userServices from "../service/userServices.js"
 import db from "../models/index.js";
 
-let wss; // WebSocket server instance
-const examClients = new Set(); // clients đang trong phòng thi
+let wss;
+const examClients = new Set();
 
-// Lấy/update visitor_stats row (luôn dùng id=1)
-async function getStats() {
-    let row = await db.visitorStats.findOne({ where: { id: 1 } });
-    if (!row) row = await db.visitorStats.create({ total_visits: 0, current_online: 0, peak_online: 0 });
-    return row;
+// ── In-memory stats — không DB write trên mỗi connection ────────────────────
+let memStats = { total_visits: 0, current_online: 0, peak_online: 0, peak_online_at: null, last_visit_at: null };
+
+// Load từ DB khi khởi động, reset current_online về 0
+async function loadStatsFromDB() {
+    try {
+        let row = await db.visitorStats.findOne({ where: { id: 1 } });
+        if (!row) row = await db.visitorStats.create({ total_visits: 0, current_online: 0, peak_online: 0 });
+        memStats = {
+            total_visits: Number(row.total_visits),
+            current_online: 0, // reset khi server restart
+            peak_online: row.peak_online || 0,
+            peak_online_at: row.peak_online_at,
+            last_visit_at: row.last_visit_at,
+        };
+        await db.visitorStats.update({ current_online: 0 }, { where: { id: 1 } });
+    } catch (e) {
+        console.error('loadStatsFromDB error:', e.message);
+    }
 }
 
-// Throttle broadcast: tối đa 1 lần/2s dù có bao nhiêu trigger
+// Sync in-memory → DB mỗi 30s (thay vì ghi mỗi connection)
+setInterval(async () => {
+    try {
+        await db.visitorStats.update({
+            total_visits: memStats.total_visits,
+            current_online: memStats.current_online,
+            peak_online: memStats.peak_online,
+            peak_online_at: memStats.peak_online_at,
+            last_visit_at: memStats.last_visit_at,
+        }, { where: { id: 1 } });
+    } catch (e) {
+        console.error('Stats sync error:', e.message);
+    }
+}, 30000);
+
+// Throttle broadcast: tối đa 1 lần/2s
 let broadcastTimer = null;
-async function broadcastVisitorStats() {
-    if (broadcastTimer) return; // đang chờ, bỏ qua
-    broadcastTimer = setTimeout(async () => {
+function broadcastVisitorStats() {
+    if (broadcastTimer) return;
+    broadcastTimer = setTimeout(() => {
         broadcastTimer = null;
-        try {
-            const stats = await getStats();
-            const message = JSON.stringify({
-                type: 'VISITOR_STATS',
-                payload: {
-                    total_visits: Number(stats.total_visits),
-                    current_online: stats.current_online,
-                    peak_online: stats.peak_online,
-                    peak_online_at: stats.peak_online_at,
-                    last_visit_at: stats.last_visit_at,
-                    exam_count: examClients.size,
-                }
-            });
-            sendAllClients(message);
-        } catch (e) {
-            console.error('broadcastVisitorStats error:', e.message);
-        }
+        const message = JSON.stringify({
+            type: 'VISITOR_STATS',
+            payload: { ...memStats, exam_count: examClients.size }
+        });
+        sendAllClients(message);
     }, 2000);
 }
 
 // Set up WebSocket server
 function setupStudentStatusWebSocket(server, path) {
     wss = new WebSocketServer({ server, path });
+    loadStatsFromDB();
 
-    // Reset current_online về 0 mỗi khi server khởi động
-    db.visitorStats.update({ current_online: 0 }, { where: { id: 1 } }).catch(() => {});
-
-    wss.on('connection', async (ws) => {
-        console.log('Client connected to WebSocket');
-
-        // Tăng total_visits và current_online
-        try {
-            const now = new Date();
-            const stats = await getStats();
-            const newOnline = stats.current_online + 1;
-            const newPeak = Math.max(stats.peak_online, newOnline);
-            await stats.update({
-                total_visits: Number(stats.total_visits) + 1,
-                current_online: newOnline,
-                peak_online: newPeak,
-                peak_online_at: newPeak > stats.peak_online ? now : stats.peak_online_at,
-                last_visit_at: now,
-            });
-            await broadcastVisitorStats();
-        } catch (e) {
-            console.error('Error updating visitor stats on connect:', e.message);
+    wss.on('connection', (ws) => {
+        // Cập nhật in-memory — không chạm DB
+        const now = new Date();
+        memStats.total_visits++;
+        memStats.current_online++;
+        memStats.last_visit_at = now;
+        if (memStats.current_online > memStats.peak_online) {
+            memStats.peak_online = memStats.current_online;
+            memStats.peak_online_at = now;
         }
+        broadcastVisitorStats();
 
-        // Lắng nghe các tin nhắn từ client
         ws.on('message', async (message) => {
             try {
                 const { type, payload } = JSON.parse(message);
@@ -83,24 +88,17 @@ function setupStudentStatusWebSocket(server, path) {
                 }
                 if (type === 'JOIN_EXAM') {
                     examClients.add(ws);
-                    await broadcastVisitorStats();
+                    broadcastVisitorStats();
                 }
             } catch (error) {
                 console.error('Error processing client message:', error);
             }
         });
 
-        ws.on('close', async () => {
-            console.log('Client disconnected from WebSocket');
+        ws.on('close', () => {
             examClients.delete(ws);
-            try {
-                const stats = await getStats();
-                const newOnline = Math.max(0, stats.current_online - 1);
-                await stats.update({ current_online: newOnline });
-                await broadcastVisitorStats();
-            } catch (e) {
-                console.error('Error updating visitor stats on disconnect:', e.message);
-            }
+            memStats.current_online = Math.max(0, memStats.current_online - 1);
+            broadcastVisitorStats();
         });
     });
 }

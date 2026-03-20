@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import initWebRoutes from './routes/web';
 import bodyParser from 'body-parser';
 import configCors from './config/cors';
@@ -8,6 +9,7 @@ import http from 'http';
 import botTelegram from './bot/botTelegram';
 const app = express();
 configCors(app);
+app.use(compression()); // gzip tất cả response >= 1KB — giảm 60-70% bandwidth
 
 // ── Request logger ──────────────────────────────────────────
 app.use((req, res, next) => {

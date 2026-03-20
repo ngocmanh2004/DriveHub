@@ -1,25 +1,22 @@
 import db from "../models/index.js"; // Sequelize models
 const { Op, Model } = require("sequelize");
+const cache = require('../cache/memoryCache');
 
 const getRank = async () => {
+    const CACHE_KEY = 'ranks_all';
+    const cached = cache.get(CACHE_KEY);
+    if (cached) return cached;
+
     try {
         let data = await db.rank.findAll({
-            include: [{
-                model: db.subject,
-            }]
+            include: [{ model: db.subject }]
         });
-        return ({
-            EM: 'Info rank',
-            EC: 0,
-            DT: data,
-        });
+        const result = { EM: 'Info rank', EC: 0, DT: data };
+        cache.set(CACHE_KEY, result, 15 * 60 * 1000); // cache 15 phút
+        return result;
     } catch (e) {
         console.error("check error: ", e);
-        return ({
-            EM: 'error from sever',//error message
-            EC: -1,//error code
-            DT: []
-        })
+        return ({ EM: 'error from sever', EC: -1, DT: [] });
     }
 }
 

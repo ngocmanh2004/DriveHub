@@ -8,6 +8,19 @@ import './LoginTestStudent.scss';
 import { toast } from "react-toastify";
 import { ENVIRONMENT_CONFIGS, getCurrentEnvironment } from '../../../../core/config/environment';
 
+// ── sessionStorage cache helpers ────────────────────────────────────────────
+function scGet<T>(key: string): T | null {
+    try {
+        const raw = sessionStorage.getItem(key);
+        if (!raw) return null;
+        const { data, expiresAt } = JSON.parse(raw);
+        if (Date.now() > expiresAt) { sessionStorage.removeItem(key); return null; }
+        return data as T;
+    } catch { return null; }
+}
+function scSet<T>(key: string, data: T, ttlMs = 5 * 60 * 1000) {
+    try { sessionStorage.setItem(key, JSON.stringify({ data, expiresAt: Date.now() + ttlMs })); } catch { }
+}
 
 // Type alias for backward compatibility
 type ThiSinh = Student;
@@ -59,24 +72,28 @@ const LoginTestStudent: React.FC = () => {
         return () => { document.body.classList.remove('test-student-page'); };
     }, []);
 
-    // Tải danh sách khóa học và xếp hạng
+    // Tải danh sách khóa học và xếp hạng — dùng sessionStorage cache 5 phút
     useEffect(() => {
         const fetchList = async () => {
             try {
-                const responseGetCourse = await get<ApiResponse<Course[]>>("/api/course");
-                const responseGetRanks = await get<ApiResponse<Rank[]>>("/api/rank/getRank");
+                let courses = scGet<Course[]>('cache_courses');
+                let ranks = scGet<Rank[]>('cache_ranks');
 
-                setRanks(responseGetRanks.DT);
-                setKhoaHocList(responseGetCourse.DT);
+                if (!courses) {
+                    const res = await get<ApiResponse<Course[]>>("/api/course");
+                    courses = res.DT;
+                    scSet('cache_courses', courses);
+                }
+                if (!ranks) {
+                    const res = await get<ApiResponse<Rank[]>>("/api/rank/getRank");
+                    ranks = res.DT;
+                    scSet('cache_ranks', ranks);
+                }
 
-                // Log danh sách khóa học để kiểm tra giá trị
-                console.log('Courses loaded:', responseGetCourse.DT);
-
-                // Sau khi lấy khóa học, tự động chọn khóa học cuối cùng (hoặc có thể là khóa học khác nếu cần)
-                if (responseGetCourse.DT.length > 0) {
-                    const lastCourse = responseGetCourse.DT[responseGetCourse.DT.length - 1];
-                    setSelectedKhoaHoc(lastCourse.IDKhoaHoc); // Gán giá trị khóa học
-                    console.log('Selected KhoaHoc:', lastCourse.IDKhoaHoc);
+                setRanks(ranks);
+                setKhoaHocList(courses);
+                if (courses.length > 0) {
+                    setSelectedKhoaHoc(courses[courses.length - 1].IDKhoaHoc);
                 }
             } catch (error) {
                 console.error("Error fetching course list:", error);
@@ -103,10 +120,16 @@ const LoginTestStudent: React.FC = () => {
                 setStudentNow(student);
                 const rank = ranks.find((r) => r.name === student.loaibangthi);
                 if (rank) {
-                    const responseGetSubjects = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, { params: { showsubject: true } });
-                    setSubjectList(responseGetSubjects.DT);
-                    autoSelectSubject(student, responseGetSubjects.DT);
-                    const allSubjectCompleted = responseGetSubjects.DT.every((subject: Subject) =>
+                    const cacheKey = `cache_subjects_${rank.id}`;
+                    let subjects = scGet<Subject[]>(cacheKey);
+                    if (!subjects) {
+                        const res = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, { params: { showsubject: true } });
+                        subjects = res.DT;
+                        scSet(cacheKey, subjects);
+                    }
+                    setSubjectList(subjects);
+                    autoSelectSubject(student, subjects);
+                    const allSubjectCompleted = subjects.every((subject: Subject) =>
                         student.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
                     );
                     setIsStartEnabled(!allSubjectCompleted);
@@ -179,14 +202,16 @@ const LoginTestStudent: React.FC = () => {
 
             const rank = ranks.find((r) => r.name === updatedStudent.loaibangthi);
             if (rank) {
-                const responseGetSubjects = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, {
-                    params: { showsubject: true },
-                });
-                setSubjectList(responseGetSubjects.DT);
-                autoSelectSubject(updatedStudent, responseGetSubjects.DT);
-
-                // Dùng updatedStudent (sau khi reset) để check — exams đã bị xóa nên luôn còn môn chưa thi
-                const allSubjectCompleted = responseGetSubjects.DT.every((subject: Subject) =>
+                const cacheKey = `cache_subjects_${rank.id}`;
+                let subjects = scGet<Subject[]>(cacheKey);
+                if (!subjects) {
+                    const res = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, { params: { showsubject: true } });
+                    subjects = res.DT;
+                    scSet(cacheKey, subjects);
+                }
+                setSubjectList(subjects);
+                autoSelectSubject(updatedStudent, subjects);
+                const allSubjectCompleted = subjects.every((subject: Subject) =>
                     updatedStudent.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
                 );
                 setIsStartEnabled(!allSubjectCompleted);

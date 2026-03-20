@@ -1,37 +1,27 @@
 import db from "../models/index.js"; // Sequelize models
 const { Op, Model } = require("sequelize");
 import userServices from "./userServices.js";
+const cache = require('../cache/memoryCache');
+
 const getSubject = async (rankId, showsubject) => {
+    if (!rankId) return ({ EM: 'Some Field Null', EC: 2, DT: [] });
+
+    const CACHE_KEY = `subjects_${rankId}_${showsubject ?? 'all'}`;
+    const cached = cache.get(CACHE_KEY);
+    if (cached) return cached;
+
     try {
-
-        if (!rankId)
-            return ({
-                EM: 'Some Field Null',//error message
-                EC: 2,//error code
-                DT: []
-            });
-
-        let whereClause = { IDrank: rankId }
+        let whereClause = { IDrank: rankId };
         if (showsubject !== undefined) {
-            whereClause.showsubject = showsubject === 'true'; // Chuyển đổi thành kiểu boolean nếu cần
+            whereClause.showsubject = showsubject === 'true';
         }
-
-        const subjects = await db.subject.findAll({
-            where: whereClause
-        });
-
-        return ({
-            EM: 'update success',//error message
-            EC: 0,//error code
-            DT: subjects
-        });
+        const subjects = await db.subject.findAll({ where: whereClause });
+        const result = { EM: 'update success', EC: 0, DT: subjects };
+        cache.set(CACHE_KEY, result, 15 * 60 * 1000); // cache 15 phút
+        return result;
     } catch (e) {
         console.error("check error: ", e);
-        return ({
-            EM: 'error from sever',//error message
-            EC: -1,//error code
-            DT: ''
-        })
+        return ({ EM: 'error from sever', EC: -1, DT: '' });
     }
 }
 
@@ -103,31 +93,20 @@ const updateSubject = async (IDsubject, rankId, name, threshold, nameEx, showsub
 };
 
 const getTestFromSubject = async (IDSubject) => {
+    if (!IDSubject) return ({ EM: 'Some Field Null', EC: 2, DT: [] });
+
+    const CACHE_KEY = `tests_subject_${IDSubject}`;
+    const cached = cache.get(CACHE_KEY);
+    if (cached) return cached;
+
     try {
-
-        if (!IDSubject)
-            return ({
-                EM: 'Some Field Null',//error message
-                EC: 2,//error code
-                DT: []
-            });
-
-        const subjects = await db.test.findAll({
-            where: { IDSubject }
-        });
-
-        return ({
-            EM: 'update success',//error message
-            EC: 0,//error code
-            DT: subjects
-        });
+        const tests = await db.test.findAll({ where: { IDSubject } });
+        const result = { EM: 'update success', EC: 0, DT: tests };
+        cache.set(CACHE_KEY, result, 15 * 60 * 1000);
+        return result;
     } catch (e) {
         console.error("check error: ", e);
-        return ({
-            EM: 'error from sever',//error message
-            EC: -1,//error code
-            DT: []
-        })
+        return ({ EM: 'error from sever', EC: -1, DT: [] });
     }
 }
 
