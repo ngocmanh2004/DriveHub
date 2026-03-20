@@ -384,6 +384,34 @@
   }
 }
 
+@media (pointer: coarse) and (orientation: landscape) {
+  body.test-student-page .header-area,
+  body.test-student-page footer {
+    display: none !important;
+  }
+
+  body.test-student-page {
+    overflow: hidden;
+    background: #1a3a5c;
+  }
+
+  body.test-student-page .app-teststudent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    overflow-y: auto;
+    z-index: 100;
+    justify-content: center;
+  }
+}
+
 .reset-button {
   position: fixed;
   top: 80px;

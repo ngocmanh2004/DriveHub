@@ -81,9 +81,11 @@ const FinalExamForm: React.FC = () => {
 
   useEffect(() => {
     const updateExamLayout = () => {
-      const isMobile = window.innerWidth <= 950 || window.innerHeight <= 950;
+      // Dùng pointer: coarse để detect thiết bị cảm ứng (phone, tablet, iPad, NestHub)
+      const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+      const isSmallScreen = window.innerWidth <= 1366 || window.innerHeight <= 950;
+      const isMobile = isTouchDevice || isSmallScreen;
       setItemsPerColumn(isMobile ? 15 : 10);
-      // Coi cả portrait lẫn landscape mobile đều là "landscape mode" vì UI tự xoay
       setIsMobileLandscape(isMobile);
     };
 

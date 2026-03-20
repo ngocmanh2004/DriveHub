@@ -38,6 +38,12 @@ const LoginTestStudent: React.FC = () => {
 
     const [isStartEnabled, setIsStartEnabled] = useState(false);
 
+    // Thêm body class để CSS ẩn header/footer trên mobile landscape
+    useEffect(() => {
+        document.body.classList.add('test-student-page');
+        return () => { document.body.classList.remove('test-student-page'); };
+    }, []);
+
     // Tải danh sách khóa học và xếp hạng
     useEffect(() => {
         const fetchList = async () => {
@@ -71,15 +77,30 @@ const LoginTestStudent: React.FC = () => {
         }
     }, [sbd]);
 
-    // 🛠️ Tự động kiểm tra thí sinh khi trang render và nếu SBD có sẵn
+    // 🛠️ Tự động load thông tin thí sinh khi trang render (KHÔNG reset bài thi)
     useEffect(() => {
-        const checkStudentInfo = async () => {
-            console.log('check sbd', sbd, Number(localStorage?.getItem("sbd")))
-            if (selectedKhoaHoc && sbd !== null && sbd > 0 && sbd == Number(localStorage?.getItem("sbd"))) {
-                await handleCheckStudent();
+        const autoLoadStudentInfo = async () => {
+            if (!selectedKhoaHoc || !sbd || sbd <= 0 || sbd !== Number(localStorage?.getItem("sbd"))) return;
+            try {
+                const response = await get<ApiResponse<Student[]>>(`/api/students?IDKhoaHoc=${selectedKhoaHoc}&SoBaoDanh=${sbd}`);
+                if (response.DT.length === 0) return;
+                const student = response.DT[0] as ThiSinh;
+                setStudentNow(student);
+                const rank = ranks.find((r) => r.name === student.loaibangthi);
+                if (rank) {
+                    const responseGetSubjects = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, { params: { showsubject: true } });
+                    setSubjectList(responseGetSubjects.DT);
+                    autoSelectSubject(student, responseGetSubjects.DT);
+                    const allSubjectCompleted = responseGetSubjects.DT.every((subject: Subject) =>
+                        student.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
+                    );
+                    setIsStartEnabled(!allSubjectCompleted);
+                }
+            } catch (error) {
+                console.error("Error auto-loading student info:", error);
             }
-        }
-        checkStudentInfo();
+        };
+        autoLoadStudentInfo();
     }, [selectedKhoaHoc]);
 
     const fetchSubjects = async (idRank: number) => {
@@ -141,19 +162,19 @@ const LoginTestStudent: React.FC = () => {
             const updatedStudent = refreshed.DT[0] as ThiSinh;
             setStudentNow(updatedStudent);
 
-            const rank = ranks.find((r) => r.name === student.loaibangthi);
+            const rank = ranks.find((r) => r.name === updatedStudent.loaibangthi);
             if (rank) {
                 const responseGetSubjects = await get<ApiResponse<Subject[]>>(`/api/subject/${rank.id}/get-subjects`, {
                     params: { showsubject: true },
                 });
                 setSubjectList(responseGetSubjects.DT);
-                autoSelectSubject(student, responseGetSubjects.DT);
+                autoSelectSubject(updatedStudent, responseGetSubjects.DT);
 
-                // Kiểm tra trạng thái hoàn thành ngay sau khi lấy danh sách môn
+                // Dùng updatedStudent (sau khi reset) để check — exams đã bị xóa nên luôn còn môn chưa thi
                 const allSubjectCompleted = responseGetSubjects.DT.every((subject: Subject) =>
-                    student.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
+                    updatedStudent.exams?.some((exam: Exam) => exam.IDSubject === subject.id && exam.result !== null)
                 );
-                setIsStartEnabled(!allSubjectCompleted); // Chỉ bật "Vào thi" nếu còn môn chưa thi
+                setIsStartEnabled(!allSubjectCompleted);
             }
         } catch (error) {
             console.error("Error checking student:", error);
@@ -230,7 +251,7 @@ const LoginTestStudent: React.FC = () => {
                         {subjectList.map(subject => {
                             const exam = studentNow?.exams?.find((e: Exam) => e.IDSubject === subject.id);
                             // Thêm class cho hàng đang được chọn
-                            const isSelected = Number(selectedSubject) == subject.id;
+                            const isSelected = Number(selectedSubject) === subject.id;
                             const rowClass = isSelected ? "selected-row" : "";
                             return (
                                 <tr key={subject.id}
