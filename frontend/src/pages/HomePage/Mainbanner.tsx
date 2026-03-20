@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './mainpages.scss';
+import { ENVIRONMENT_CONFIGS, getCurrentEnvironment } from '../../core/config/environment';
 
 const slides = [
   {
@@ -105,9 +106,18 @@ const HeroVisual: React.FC = () => (
   </div>
 );
 
+interface VisitorStats {
+  total_visits: number;
+  current_online: number;
+  peak_online: number;
+  peak_online_at: string | null;
+  last_visit_at: string | null;
+}
+
 const Mainbanner: React.FC = () => {
   const [active, setActive] = useState(0);
   const [animKey, setAnimKey] = useState(0);
+  const [stats, setStats] = useState<VisitorStats | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -115,6 +125,19 @@ const Mainbanner: React.FC = () => {
       setAnimKey(k => k + 1);
     }, 5500);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const wsUrl = ENVIRONMENT_CONFIGS[getCurrentEnvironment()]?.WS_BASE_URL;
+    if (!wsUrl) return;
+    const ws = new WebSocket(wsUrl);
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'VISITOR_STATS') setStats(data.payload);
+      } catch (_) {}
+    };
+    return () => ws.close();
   }, []);
 
   const goTo = (i: number) => {
@@ -158,6 +181,28 @@ const Mainbanner: React.FC = () => {
                 {slide.cta2.text}
               </a>
             </div>
+
+            {stats && (
+              <div className="hp-visitor-stats">
+                <div className="hp-vs-item">
+                  <span className="hp-vs-dot hp-vs-dot--green" />
+                  <span className="hp-vs-value">{stats.current_online}</span>
+                  <span className="hp-vs-label">đang online</span>
+                </div>
+                <div className="hp-vs-divider" />
+                <div className="hp-vs-item">
+                  <i className="material-icons hp-vs-icon">bar_chart</i>
+                  <span className="hp-vs-value">{stats.total_visits.toLocaleString('vi-VN')}</span>
+                  <span className="hp-vs-label">lượt truy cập</span>
+                </div>
+                <div className="hp-vs-divider" />
+                <div className="hp-vs-item">
+                  <i className="material-icons hp-vs-icon">trending_up</i>
+                  <span className="hp-vs-value">{stats.peak_online}</span>
+                  <span className="hp-vs-label">cao nhất</span>
+                </div>
+              </div>
+            )}
 
             <div className="hp-hero-mezon">
               <span className="hp-hero-mezon-text">Tích hợp trên</span>

@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import './FinalExamForm.scss';
 import { VirtualDPad } from './VirtualDPad';
 import { VirtualNumpad } from './VirtualNumpad';
+import { ENVIRONMENT_CONFIGS, getCurrentEnvironment } from '../../../core/config/environment';
 
 // Câu điểm liệt theo hạng — sai 1 câu bất kỳ → TRƯỢT dù đủ điểm
 // Tên hạng lấy đúng từ bảng rank trong DB: 'A', 'A1m', 'Am'
@@ -79,6 +80,15 @@ const FinalExamForm: React.FC = () => {
   const [itemsPerColumn, setItemsPerColumn] = useState(10);
   const [isMobileLandscape, setIsMobileLandscape] = useState(false);
   const [isFakeLandscape, setIsFakeLandscape] = useState(false);
+
+  // WebSocket: gửi JOIN_EXAM để server đếm người đang thi
+  useEffect(() => {
+    const wsUrl = ENVIRONMENT_CONFIGS[getCurrentEnvironment()]?.WS_BASE_URL;
+    if (!wsUrl) return;
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => ws.send(JSON.stringify({ type: 'JOIN_EXAM' }));
+    return () => ws.close();
+  }, []);
 
   useEffect(() => {
     const updateExamLayout = () => {

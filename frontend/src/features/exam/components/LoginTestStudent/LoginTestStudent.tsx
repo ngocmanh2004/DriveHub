@@ -6,6 +6,7 @@ import { Course, Status, Rank, Question, Exam, Student } from "../../../../featu
 import { Subject } from "../../../../features/exam/types";
 import './LoginTestStudent.scss';
 import { toast } from "react-toastify";
+import { ENVIRONMENT_CONFIGS, getCurrentEnvironment } from '../../../../core/config/environment';
 
 
 // Type alias for backward compatibility
@@ -37,6 +38,20 @@ const LoginTestStudent: React.FC = () => {
     const [sbd, setSbd] = useState<number | null>(Number(localStorage?.getItem("sbd")) || null);
 
     const [isStartEnabled, setIsStartEnabled] = useState(false);
+    const [examCount, setExamCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        const wsUrl = ENVIRONMENT_CONFIGS[getCurrentEnvironment()]?.WS_BASE_URL;
+        if (!wsUrl) return;
+        const ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                if (data.type === 'VISITOR_STATS') setExamCount(data.payload.exam_count);
+            } catch (_) {}
+        };
+        return () => ws.close();
+    }, []);
 
     // Thêm body class để CSS ẩn header/footer trên mobile landscape
     useEffect(() => {
@@ -411,6 +426,12 @@ const LoginTestStudent: React.FC = () => {
                 </div>
             </div>
 
+            {examCount !== null && (
+                <div className="exam-count-badge">
+                    <span className="exam-count-dot" />
+                    {examCount} người đang thi
+                </div>
+            )}
 
         </div>
     );
