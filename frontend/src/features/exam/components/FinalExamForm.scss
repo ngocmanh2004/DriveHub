@@ -1,3 +1,8 @@
+/* Apply touch-action và overflow-x chỉ khi fake landscape */
+.exam-rotate-wrapper.fake-landscape {
+    touch-action: manipulation;
+}
+
 .exam-container {
     font-family: Arial, sans-serif;
     box-sizing: border-box;
@@ -656,7 +661,6 @@ button:hover {
     height: 100vw;
     transform-origin: top left;
     transform: rotate(90deg) translateY(-100%);
-    overflow: hidden;
     z-index: 9999;
     background: #fff;
 }
@@ -707,18 +711,19 @@ button:hover {
     flex: 1;
     border-width: 0;
     border-radius: 0;
-    padding: 26px 10px 112px 10px;
+    padding: 26px 10px 142px 10px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-padding-bottom: 112px;
+    scroll-padding-bottom: 142px;
 }
 
 .exam-rotate-wrapper.fake-landscape .question-section img {
     display: block;
     margin: 0 auto;
-    max-height: calc(100vh - 40px) !important;
+    max-height: none !important;
+    height: auto !important;
     width: auto !important;
-    max-width: 90% !important;
+    max-width: 70% !important;
     object-fit: contain;
 }
 
@@ -734,14 +739,19 @@ button:hover {
     justify-content: space-between;
     overflow: hidden;
     position: relative;
+    background-color: #f0f0f0;
+    border: 2px solid rgba(205, 205, 205, 255);
+    border-radius: 15px;
 }
 
 .exam-rotate-wrapper.fake-landscape .sidebar-section .top {
-    flex: 0 0 90%;
-    max-height: 90%;
+    flex: 1 1 auto;
+    max-height: calc(100% - 44px);
     min-height: 0;
     overflow: hidden;
-    padding-bottom: 4px;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .exam-rotate-wrapper.fake-landscape .time-remaining {
@@ -760,31 +770,55 @@ button:hover {
 }
 
 .exam-rotate-wrapper.fake-landscape .question-nav-container {
-    display: grid;
-    grid-template-columns: repeat(var(--question-column-count, 1), max-content);
-    column-gap: 4px;
-    row-gap: 2px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 4px;
     margin: 0 1px;
-    padding-bottom: 8px;
-    flex: 1;
+    padding: 4px 1px 4px 1px;
+    flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: auto;
+    max-width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto !important;
     justify-content: flex-start;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
 }
 
 .exam-rotate-wrapper.fake-landscape .question-nav-container::-webkit-scrollbar {
-    display: none;
+    width: 4px;
+    height: 4px;
+}
+
+.exam-rotate-wrapper.fake-landscape .question-nav-container::-webkit-scrollbar-thumb {
+    background: #c2c2c2;
+    border-radius: 2px;
 }
 
 .exam-rotate-wrapper.fake-landscape .question-nav {
-    margin: 0;
-    min-width: 56px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 0px;
+    flex-shrink: 0;
+    min-width: 56px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.exam-rotate-wrapper.fake-landscape .question-nav::-webkit-scrollbar {
+    width: 3px;
+}
+
+.exam-rotate-wrapper.fake-landscape .question-nav::-webkit-scrollbar-thumb {
+    background: #c2c2c2;
+    border-radius: 2px;
 }
 
 .exam-rotate-wrapper.fake-landscape .question-btn {
@@ -858,20 +892,31 @@ button:hover {
 }
 
 .exam-rotate-wrapper.fake-landscape .end-exam-btn {
-    position: sticky;
+    position: fixed;
+    
     bottom: 0;
-    z-index: 5;
-    width: 100%;
+    right: 0;
+    z-index: 999;
+    width: var(--mobile-right-exam-min-width, 145px);
     min-width: 0;
     max-width: none;
-    flex: 0 0 10%;
-    min-height: 0;
-    height: 10%;
-    margin: auto 0 0 0;
+    height: 40px;
+    margin: 0;
     border-radius: 0;
-    padding: 4px 6px;
+    padding: 8px 6px;
     font-size: 11px;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.18);
+    background-color: #d32f2f !important;
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.exam-rotate-wrapper.fake-landscape .end-exam-btn:hover {
+    background-color: #b71c1c;
 }
 
 .exam-rotate-wrapper.fake-landscape .mobile-current-question-info {
@@ -920,9 +965,10 @@ button:hover {
     right: calc(var(--mobile-right-exam-width) + 8px);
     bottom: var(--virtual-controls-bottom);
     z-index: 100;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-end;
     pointer-events: none;
+    padding: 0 20px;
 }
 
 .exam-rotate-wrapper.fake-landscape .virtual-controls__dpad,
@@ -936,7 +982,7 @@ button:hover {
     align-items: center;
     position: static;
     z-index: 100;
-    transform: scale(0.82);
+    transform: scale(0.65);
     transform-origin: bottom left;
     gap: 5px;
     opacity: 0.92;
@@ -958,7 +1004,7 @@ button:hover {
     position: static;
     z-index: 100;
     opacity: 0.95;
-    transform: scale(0.82);
+    transform: scale(0.65);
     transform-origin: bottom right;
 }
 
@@ -1270,9 +1316,10 @@ button:hover {
         right: calc(var(--mobile-right-exam-width) + 8px);
         bottom: var(--virtual-controls-bottom);
         z-index: 100;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: flex-end;
         pointer-events: none;
+        padding: 0 20px;
     }
     .virtual-controls__dpad,
     .virtual-controls__numpad {
