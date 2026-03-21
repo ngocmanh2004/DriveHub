@@ -116,10 +116,12 @@ const initWebRoutes = (app) => {
     //rank
     routes.post('/rank/create-rank', rankController.createRank)
     routes.put('/rank/update-rank/:id', rankController.updateRank)
+    routes.delete('/rank/:id', rankController.deleteRank)
 
     //subject
     routes.post('/subject/create-subject', subjectController.createSubject)
     routes.put('/subject/update-subject/:IDsubject', subjectController.updateSubject)
+    routes.delete('/subject/:id', subjectController.deleteSubject)
 
     //exam
     routes.delete("/exam/:id", examController.deleteExam)

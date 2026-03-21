@@ -58,10 +58,19 @@ const updateRank = async (req, res) => {
 };
 
 
-///hết CRUD cơ bản
+const deleteRank = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await rankService.deleteRank(id);
+        return res.status(200).json({ EM: data.EM, EC: data.EC, DT: data.DT });
+    } catch (error) {
+        return res.status(500).json({ EM: 'error from sever', EC: '-1', DT: '' });
+    }
+};
 
 module.exports = {
     getRank,
     createRank,
-    updateRank
+    updateRank,
+    deleteRank
 }

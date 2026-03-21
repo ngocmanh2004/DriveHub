@@ -24,25 +24,14 @@ const getRank = async () => {
 const createRank = async (name) => {
     try {
         if (!name)
-            return ({
-                EM: 'Some Field Null',//error message
-                EC: 2,//error code
-                DT: []
-            });
+            return ({ EM: 'Some Field Null', EC: 2, DT: [] });
 
         const newRank = await db.rank.create({ name });
-        return ({
-            EM: 'create success',//error message
-            EC: 0,//error code
-            DT: newRank
-        });
+        cache.invalidate('ranks_all');
+        return ({ EM: 'create success', EC: 0, DT: newRank });
     } catch (error) {
         console.log('chekc error', error)
-        return res.status(500).json({
-            EM: 'error from sever',//error message
-            EC: -1,//error code
-            DT: []
-        });
+        return ({ EM: 'error from sever', EC: -1, DT: [] });
     }
 };
 
@@ -65,11 +54,8 @@ const updateRank = async (id, name) => {
             });
         }
         const updateRank = await rank.update({ name });
-        return ({
-            EM: 'update success',//error message
-            EC: 0,//error code
-            DT: updateRank
-        });
+        cache.invalidate('ranks_all');
+        return ({ EM: 'update success', EC: 0, DT: updateRank });
     } catch (error) {
         return ({
             EM: 'error from sever',//error message
@@ -80,10 +66,25 @@ const updateRank = async (id, name) => {
 };
 
 
-///hết CRUD cơ bản
+const deleteRank = async (id) => {
+    try {
+        if (!id) return ({ EM: 'Some Field Null', EC: 2, DT: [] });
+
+        const rank = await db.rank.findByPk(id);
+        if (!rank) return ({ EM: 'Cant find by ID', EC: 1, DT: [] });
+
+        await rank.destroy();
+        cache.invalidate('ranks_all');
+        return ({ EM: 'delete success', EC: 0, DT: [] });
+    } catch (error) {
+        console.log('deleteRank error', error);
+        return ({ EM: 'error from sever', EC: -1, DT: [] });
+    }
+};
 
 module.exports = {
     getRank,
     createRank,
-    updateRank
+    updateRank,
+    deleteRank
 }

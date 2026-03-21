@@ -4,7 +4,7 @@ import { ApiResponse, UserStatus, Rank, Subject } from "../../../../interfaces";
 import "./SettingForm.scss";
 
 const Setting: React.FC = () => {
-  const { get, post, put } = useApiService();
+  const { get, post, put, del } = useApiService();
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
   const [ranks, setRanks] = useState<Rank[]>([]);
@@ -120,11 +120,21 @@ const Setting: React.FC = () => {
     } catch { alert("Lỗi khi cập nhật hạng."); }
   };
 
-  const handleDeleteRank = async (_id: number) => {
+  const handleDeleteRank = async (id: number) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa hạng này?")) return;
     try {
-      // await del(`/api/rank/${_id}`);
+      await del(`/api/rank/${id}`);
+      const updated = await get<ApiResponse<Rank[]>>("/api/rank/getRank");
+      setRanks(updated.DT);
     } catch { alert("Lỗi khi xóa hạng."); }
+  };
+
+  const handleDeleteSubject = async (id: number) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa môn học này?")) return;
+    try {
+      await del(`/api/subject/${id}`);
+      await fetchSubjects();
+    } catch { alert("Lỗi khi xóa môn học."); }
   };
 
   const handleRankChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -442,15 +452,18 @@ const Setting: React.FC = () => {
                               <button className="s-btn s-btn--ghost s-btn--sm" onClick={() => setEditingSubjectId(null)}>Hủy</button>
                             </>
                           ) : (
-                            <button className="s-btn s-btn--primary s-btn--sm" onClick={() => {
-                              setEditingSubjectId(subject.id);
-                              setEditingSubjectName(subject.name);
-                              setEditingSubjectThreshold(subject.threshold);
-                              setEditingSubjectNumberOfQuestions(subject.numberofquestion);
-                              setEditingSubjectNameEx(subject.nameEx);
-                              setEditingSubjectShowSubject(subject.showsubject);
-                              setEditingTimeFinish(subject.timeFinish);
-                            }}>Sửa</button>
+                            <>
+                              <button className="s-btn s-btn--primary s-btn--sm" onClick={() => {
+                                setEditingSubjectId(subject.id);
+                                setEditingSubjectName(subject.name);
+                                setEditingSubjectThreshold(subject.threshold);
+                                setEditingSubjectNumberOfQuestions(subject.numberofquestion);
+                                setEditingSubjectNameEx(subject.nameEx);
+                                setEditingSubjectShowSubject(subject.showsubject);
+                                setEditingTimeFinish(subject.timeFinish);
+                              }}>Sửa</button>
+                              <button className="s-btn s-btn--danger s-btn--sm" onClick={() => handleDeleteSubject(subject.id)}>Xóa</button>
+                            </>
                           )}
                         </div>
                       </td>

@@ -79,9 +79,20 @@ const getTestFromSubject = async (req, res) => {
     }
 }
 
+const deleteSubject = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await subjectService.deleteSubject(id);
+        return res.status(200).json({ EM: data.EM, EC: data.EC, DT: data.DT });
+    } catch (error) {
+        return res.status(500).json({ EM: 'error from sever', EC: '-1', DT: '' });
+    }
+};
+
 module.exports = {
     getSubject,
     createSubject,
     updateSubject,
+    deleteSubject,
     getTestFromSubject
 }
