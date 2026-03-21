@@ -452,6 +452,21 @@ $ease:       0.3s cubic-bezier(0.4, 0, 0.2, 1);
   &:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba($primary,.4);}
 }
 
+// ─── VISITOR BAR (cuối trang) ─────────────────────────────────────────────────
+.hp-visitor-bar {
+  background: #0f172a;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.hp-visitor-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 // ─── FOOTER CTA ───────────────────────────────────────────────────────────────
 .hp-footer-cta {
   background:linear-gradient(135deg,$primary 0%,$primary-dk 50%,$cyan 100%);

@@ -6,15 +6,25 @@ let wss;
 const examClients = new Set();
 
 // ── In-memory stats — không DB write trên mỗi connection ────────────────────
-let memStats = { total_visits: 0, current_online: 0, peak_online: 0, peak_online_at: null, last_visit_at: null };
+let memStats = { total_visits: 0, monthly_visits: 0, monthly_reset_at: null, current_online: 0, peak_online: 0, peak_online_at: null, last_visit_at: null };
+
+function isSameMonth(date) {
+    if (!date) return false;
+    const d = new Date(date);
+    const now = new Date();
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+}
 
 // Load từ DB khi khởi động, reset current_online về 0
 async function loadStatsFromDB() {
     try {
         let row = await db.visitorStats.findOne({ where: { id: 1 } });
-        if (!row) row = await db.visitorStats.create({ total_visits: 0, current_online: 0, peak_online: 0 });
+        if (!row) row = await db.visitorStats.create({ total_visits: 0, current_online: 0, peak_online: 0, monthly_visits: 0 });
+        const monthly = isSameMonth(row.monthly_reset_at) ? Number(row.monthly_visits) : 0;
         memStats = {
             total_visits: Number(row.total_visits),
+            monthly_visits: monthly,
+            monthly_reset_at: isSameMonth(row.monthly_reset_at) ? row.monthly_reset_at : new Date(),
             current_online: 0, // reset khi server restart
             peak_online: row.peak_online || 0,
             peak_online_at: row.peak_online_at,
@@ -31,6 +41,8 @@ setInterval(async () => {
     try {
         await db.visitorStats.update({
             total_visits: memStats.total_visits,
+            monthly_visits: memStats.monthly_visits,
+            monthly_reset_at: memStats.monthly_reset_at,
             current_online: memStats.current_online,
             peak_online: memStats.peak_online,
             peak_online_at: memStats.peak_online_at,
@@ -63,7 +75,13 @@ function setupStudentStatusWebSocket(server, path) {
     wss.on('connection', (ws) => {
         // Cập nhật in-memory — không chạm DB
         const now = new Date();
+        // Reset monthly nếu sang tháng mới
+        if (!isSameMonth(memStats.monthly_reset_at)) {
+            memStats.monthly_visits = 0;
+            memStats.monthly_reset_at = now;
+        }
         memStats.total_visits++;
+        memStats.monthly_visits++;
         memStats.current_online++;
         memStats.last_visit_at = now;
         if (memStats.current_online > memStats.peak_online) {
