@@ -92,6 +92,32 @@ const FinalExamForm: React.FC = () => {
     return () => ws.close();
   }, []);
 
+  // Request fullscreen on mobile to hide address bar
+  useEffect(() => {
+    const requestFullscreen = async () => {
+      if (!document.fullscreenElement && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        try {
+          const elem = document.documentElement;
+          if (elem.requestFullscreen) {
+            await elem.requestFullscreen();
+          } else if ((elem as any).webkitRequestFullscreen) {
+            await (elem as any).webkitRequestFullscreen();
+          } else if ((elem as any).mozRequestFullScreen) {
+            await (elem as any).mozRequestFullScreen();
+          } else if ((elem as any).msRequestFullscreen) {
+            await (elem as any).msRequestFullscreen();
+          }
+        } catch (err) {
+          console.log('Fullscreen request failed:', err);
+        }
+      }
+    };
+    
+    // Delay to avoid blocking initial render
+    const timer = setTimeout(requestFullscreen, 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     const updateExamLayout = () => {
       // Dùng pointer: coarse để detect thiết bị cảm ứng (phone, tablet, iPad, NestHub)
